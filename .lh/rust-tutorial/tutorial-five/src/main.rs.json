@@ -1,0 +1,50 @@
+{
+    "sourceFile": "rust-tutorial/tutorial-five/src/main.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 8,
+            "patches": [
+                {
+                    "date": 1716796157399,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1716796171156,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-use io:std:io;\n+use io:std::io;\n \n fn main() {\n     let mut input = String::new();\n \n"
+                },
+                {
+                    "date": 1716796187809,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-use io:std::io;\n+use std::io;\n \n fn main() {\n     let mut input = String::new();\n \n"
+                },
+                {
+                    "date": 1716796201274,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n \n fn main() {\n     let mut input = String::new();\n \n-    io:stdin.read_line(&mut input).expect(\"Expected to read line\");\n+    io:stdin.read_lines(&mut input).expect(\"Expected to read line\");\n \n     let intInput:i64 = input.trim().parse().unwrap();\n \n     println!(\"{}\",intInput+2 );\n"
+                },
+                {
+                    "date": 1716796210105,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n \n fn main() {\n     let mut input = String::new();\n \n-    io:stdin.read_lines(&mut input).expect(\"Expected to read line\");\n+    io::stdin.read_lines(&mut input).expect(\"Expected to read line\");\n \n     let intInput:i64 = input.trim().parse().unwrap();\n \n     println!(\"{}\",intInput+2 );\n"
+                },
+                {
+                    "date": 1716796216096,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n \n fn main() {\n     let mut input = String::new();\n \n-    io::stdin.read_lines(&mut input).expect(\"Expected to read line\");\n+    io::stdin.read_line(&mut input).expect(\"Expected to read line\");\n \n     let intInput:i64 = input.trim().parse().unwrap();\n \n     println!(\"{}\",intInput+2 );\n"
+                },
+                {
+                    "date": 1716796226593,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n \n fn main() {\n     let mut input = String::new();\n \n-    io::stdin.read_line(&mut input).expect(\"Expected to read line\");\n+    io::stdin().read_line(&mut input).expect(\"Expected to read line\");\n \n     let intInput:i64 = input.trim().parse().unwrap();\n \n     println!(\"{}\",intInput+2 );\n"
+                },
+                {
+                    "date": 1716796257526,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,8 +4,8 @@\n     let mut input = String::new();\n \n     io::stdin().read_line(&mut input).expect(\"Expected to read line\");\n \n-    let intInput:i64 = input.trim().parse().unwrap();\n+    let int_input:i64 = input.trim().parse().unwrap();\n \n-    println!(\"{}\",intInput+2 );\n+    println!(\"{}\",int_input+2 );\n }\n"
+                },
+                {
+                    "date": 1716796303447,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,5 +7,10 @@\n \n     let int_input:i64 = input.trim().parse().unwrap();\n \n     println!(\"{}\",int_input+2 );\n+\n+    let x:i32 = 123;\n+    let y:i32 = 45;\n+\n+    println!(\"{}\",x+y);\n }\n"
+                }
+            ],
+            "date": 1716796157399,
+            "name": "Commit-0",
+            "content": "use io:std:io;\n\nfn main() {\n    let mut input = String::new();\n\n    io:stdin.read_line(&mut input).expect(\"Expected to read line\");\n\n    let intInput:i64 = input.trim().parse().unwrap();\n\n    println!(\"{}\",intInput+2 );\n}\n"
+        }
+    ]
+}
