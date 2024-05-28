@@ -4,13 +4,6 @@ fn main() {
     let multi_number:i64 = calulate_number(32,45);
 
     println!("multi_number==={}",multi_number);
-
-    let x = {
-        let y = 10;
-        y+1
-    };
-
-    println!("x==={}",x);
 }
 
 

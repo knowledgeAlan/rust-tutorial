@@ -1,0 +1,50 @@
+{
+    "sourceFile": "rust-tutorial/tutorial-six/src/main.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 8,
+            "patches": [
+                {
+                    "date": 1716893495087,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1716893510093,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n     println!(\"Hello, world!\");\n \n     let multiNumber:i64 = calulateNumber(32,45);\n \n-    println!(\"{}\",multiNumber);\n+    println!(\"multiNumber==={}\",multiNumber);\n }\n \n \n function calulateNumber(x:i64, y:i64) -> i64 {\n"
+                },
+                {
+                    "date": 1716893573701,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,8 +6,7 @@\n     println!(\"multiNumber==={}\",multiNumber);\n }\n \n \n-function calulateNumber(x:i64, y:i64) -> i64 {\n+fn calulateNumber(x:i64, y:i64) -> i64 {\n     return x * y;\n-\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1716893588669,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,7 +6,7 @@\n     println!(\"multiNumber==={}\",multiNumber);\n }\n \n \n-fn calulateNumber(x:i64, y:i64) -> i64 {\n+fn calulate_number(x:i64, y:i64) -> i64 {\n     return x * y;\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1716893594574,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n fn main() {\n     println!(\"Hello, world!\");\n \n-    let multiNumber:i64 = calulateNumber(32,45);\n+    let multiNumber:i64 = calulate_number(32,45);\n \n     println!(\"multiNumber==={}\",multiNumber);\n }\n \n"
+                },
+                {
+                    "date": 1716893603087,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,10 @@\n fn main() {\n     println!(\"Hello, world!\");\n \n-    let multiNumber:i64 = calulate_number(32,45);\n+    let multi_number:i64 = calulate_number(32,45);\n \n-    println!(\"multiNumber==={}\",multiNumber);\n+    println!(\"multi_number==={}\",multi_number);\n }\n \n \n fn calulate_number(x:i64, y:i64) -> i64 {\n"
+                },
+                {
+                    "date": 1716893626660,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,8 +3,15 @@\n \n     let multi_number:i64 = calulate_number(32,45);\n \n     println!(\"multi_number==={}\",multi_number);\n+\n+    let x = {\n+        let y = 10;\n+        y+1\n+    }\n+\n+    println!(\"x==={}\",x);\n }\n \n \n fn calulate_number(x:i64, y:i64) -> i64 {\n"
+                },
+                {
+                    "date": 1716893638341,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,9 @@\n \n     let x = {\n         let y = 10;\n         y+1\n-    }\n+    };\n \n     println!(\"x==={}\",x);\n }\n \n"
+                },
+                {
+                    "date": 1716893643428,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,19 @@\n+fn main() {\n+    println!(\"Hello, world!\");\n+\n+    let multi_number:i64 = calulate_number(32,45);\n+\n+    println!(\"multi_number==={}\",multi_number);\n+\n+    let x = {\n+        let y = 10;\n+        y+1\n+    };\n+\n+    println!(\"x==={}\",x);\n+}\n+\n+\n+fn calulate_number(x:i64, y:i64) -> i64 {\n+    return x * y;\n+}\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1716893495087,
+            "name": "Commit-0",
+            "content": "fn main() {\n    println!(\"Hello, world!\");\n\n    let multiNumber:i64 = calulateNumber(32,45);\n\n    println!(\"{}\",multiNumber);\n}\n\n\nfunction calulateNumber(x:i64, y:i64) -> i64 {\n    return x * y;\n\n}"
+        }
+    ]
+}

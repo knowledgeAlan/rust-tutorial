@@ -8,7 +8,7 @@ fn main() {
     let x = {
         let y = 10;
         y+1
-    };
+    }
 
     println!("x==={}",x);
 }
