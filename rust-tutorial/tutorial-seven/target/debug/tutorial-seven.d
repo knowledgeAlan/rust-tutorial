@@ -1,0 +1,1 @@
+/Users/uniweb/Desktop/rust-workspace/rust-tutorial/rust-tutorial/tutorial-seven/target/debug/tutorial-seven: /Users/uniweb/Desktop/rust-workspace/rust-tutorial/rust-tutorial/tutorial-seven/src/main.rs

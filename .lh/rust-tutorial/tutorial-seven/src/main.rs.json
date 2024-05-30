@@ -1,0 +1,34 @@
+{
+    "sourceFile": "rust-tutorial/tutorial-seven/src/main.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 4,
+            "patches": [
+                {
+                    "date": 1717062989435,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1717063009451,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n fn main() {\n     \n-    let x = 12;\n+    let x:i32 = 12;\n \n     if(x == 12 ){\n         println!(\"true\");\n     }\n"
+                },
+                {
+                    "date": 1717063032118,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,7 +3,9 @@\n     let x:i32 = 12;\n \n     if(x == 12 ){\n         println!(\"true\");\n+    }else{\n+        println!(\"false\");\n     }\n     \n }\n"
+                },
+                {
+                    "date": 1717063047802,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n fn main() {\n     \n     let x:i32 = 12;\n \n-    if(x == 12 ){\n+    if x == 12 {\n         println!(\"true\");\n     }else{\n         println!(\"false\");\n     }\n"
+                },
+                {
+                    "date": 1717063070941,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,8 +3,10 @@\n     let x:i32 = 12;\n \n     if x == 12 {\n         println!(\"true\");\n+    }else if x == 13 {\n+        println!(\"false 13\");\n     }else{\n         println!(\"false\");\n     }\n     \n"
+                }
+            ],
+            "date": 1717062989435,
+            "name": "Commit-0",
+            "content": "fn main() {\n    \n    let x = 12;\n\n    if(x == 12 ){\n        println!(\"true\");\n    }\n    \n}\n"
+        }
+    ]
+}
