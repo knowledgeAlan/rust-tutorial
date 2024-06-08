@@ -1,0 +1,11 @@
+This is an example of how to use the VERY cool rhai filter feature.
+We use a Liquid filter to run a Rhai script:
+
+This is the result of running the script as a filter.
+
+You can even set values from within the rhai filter function
+
+Though after liquid itself has used the value, or processing the next file has begun, any changes
+to the variable by a rhai filter will be ignored (by liquid) until the next liquid file!
+
+Any liquid variable created/assigned in a file is not carried over to other files, but the ones from Rhai are!
