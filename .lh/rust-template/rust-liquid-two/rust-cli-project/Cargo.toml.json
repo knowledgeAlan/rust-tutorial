@@ -1,0 +1,22 @@
+{
+    "sourceFile": "rust-template/rust-liquid-two/rust-cli-project/Cargo.toml",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1718100968877,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1718101373004,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,6 +7,5 @@\n \n [dependencies]\n anyhow = \"1.0.86\"\n tokio = \"1.38.0\"\n-axum = { version = \"0.7.4\", features = [\"http2\", \"query\", \"tracing\"] }\n-base64 = \"0.22.1\"\n+axum = { version = \"0.7.4\", features = [\"http2\", \"query\", \"tracing\"] }\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1718100968877,
+            "name": "Commit-0",
+            "content": "[package]\nname = \"template\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html\n\n[dependencies]\nanyhow = \"1.0.86\"\ntokio = \"1.38.0\"\naxum = { version = \"0.7.4\", features = [\"http2\", \"query\", \"tracing\"] }"
+        }
+    ]
+}

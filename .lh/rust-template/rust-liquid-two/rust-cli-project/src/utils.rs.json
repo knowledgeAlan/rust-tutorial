@@ -1,0 +1,22 @@
+{
+    "sourceFile": "rust-template/rust-liquid-two/rust-cli-project/src/utils.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1718101977583,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1718102179033,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,5 +10,13 @@\n         Box::new(File::open(input)?)\n     };\n \n     Ok(reader)\n+}\n+\n+pub fn get_content(input: &str) -> Result<Vec<u8>> {\n+\n+    let mut reader:Box<dyn Read> = get_reader(input)?;\n+    let mut buf:Vec<u8> = Vec::new();\n+    reader.read_to_end(&mut buf)?;\n+    Ok(buf)\n }\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1718101977583,
+            "name": "Commit-0",
+            "content": "use anyhow:Result;\nuse std::{fs::file,io::Read};\n\npub fn get_reader(input: &str) -> Result<Box<dyn Read>> {\n\n    let reader:Box<dyn Read> = if input == \"-\" {\n        Box::new(std::io::stdin()))\n    }else{\n\n        Box::new(File::open(input)?)\n    };\n\n    Ok(reader)\n}"
+        }
+    ]
+}

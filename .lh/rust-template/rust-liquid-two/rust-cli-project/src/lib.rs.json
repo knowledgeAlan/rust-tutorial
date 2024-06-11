@@ -1,0 +1,18 @@
+{
+    "sourceFile": "rust-template/rust-liquid-two/rust-cli-project/src/lib.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1718101815158,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1718101815158,
+            "name": "Commit-0",
+            "content": "mod cli;\nmod process;\nmod utils;\n"
+        }
+    ]
+}
