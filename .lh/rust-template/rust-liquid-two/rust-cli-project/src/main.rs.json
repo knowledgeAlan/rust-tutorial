@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 7,
+            "activePatchIndex": 8,
             "patches": [
                 {
                     "date": 1718183315812,
@@ -36,6 +36,10 @@
                 {
                     "date": 1718185207732,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,8 +2,8 @@\n \n #[tokio::main]\n async fn main() -> anyhow::Result<()> {\n \n-    tracing_subscriber::fmt::init();\n+    // tracing_subscriber::fmt::init();\n     Ok(());\n }\n //git config --global user.email \"1299076979@qq.com\" git config --global user.name \"1299076979@qq.com\"\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718186193279,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,8 +2,8 @@\n \n #[tokio::main]\n async fn main() -> anyhow::Result<()> {\n \n-    // tracing_subscriber::fmt::init();\n+    tracing_subscriber::fmt::init();\n     Ok(());\n }\n //git config --global user.email \"1299076979@qq.com\" git config --global user.name \"1299076979@qq.com\"\n\\ No newline at end of file\n"
                 }
             ],
             "date": 1718183315812,
