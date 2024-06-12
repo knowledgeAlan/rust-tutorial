@@ -1,5 +1,5 @@
-use anyhow::Result;
-use std::{fs::File,io::Read};
+use anyhow:Result;
+use std::{fs::file,io::Read};
 
 pub fn get_reader(input: &str) -> Result<Box<dyn Read>> {
 

@@ -1,0 +1,34 @@
+{
+    "sourceFile": "rust-template/rust-liquid-two/rust-cli-project/src/main.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 4,
+            "patches": [
+                {
+                    "date": 1718183315812,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1718183325367,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n use anyhow::Result;\n \n #[tokio::main]\n-fn main()=>anyhow::Result<()> {\n+async fn main()=>anyhow::Result<()> {\n \n     Ok(());\n }\n"
+                },
+                {
+                    "date": 1718183334305,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n use anyhow::Result;\n \n #[tokio::main]\n-async fn main()=>anyhow::Result<()> {\n+async fn main() -> anyhow::Result<()> {\n \n     Ok(());\n }\n"
+                },
+                {
+                    "date": 1718183383538,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,6 +2,7 @@\n \n #[tokio::main]\n async fn main() -> anyhow::Result<()> {\n \n+    tracing_subscriber::fmt::init();\n     Ok(());\n }\n"
+                },
+                {
+                    "date": 1718183447642,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-use anyhow::Result;\n+ use clap::Parser;\n \n #[tokio::main]\n async fn main() -> anyhow::Result<()> {\n \n"
+                }
+            ],
+            "date": 1718183315812,
+            "name": "Commit-0",
+            "content": "use anyhow::Result;\n\n#[tokio::main]\nfn main()=>anyhow::Result<()> {\n\n    Ok(());\n}\n"
+        }
+    ]
+}
