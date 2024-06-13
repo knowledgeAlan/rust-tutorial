@@ -9,8 +9,3 @@ use enum_dispatch::enum_dispatch;
 pub use process::*;
 
 pub use utils::*;
-
-
-pub trait CmDExcetor {
-    async fn execute(self) -> anyhow::Result<()>;
-}

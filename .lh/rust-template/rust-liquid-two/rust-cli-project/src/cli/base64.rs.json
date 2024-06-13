@@ -1,0 +1,58 @@
+{
+    "sourceFile": "rust-template/rust-liquid-two/rust-cli-project/src/cli/base64.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 10,
+            "patches": [
+                {
+                    "date": 1718271450884,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1718271560897,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,7 +9,12 @@\n use super::verify_file;\n \n #[derive(Debug,Parser)]\n #[enum_dispatch(CmDExcetor)]\n-pub enum Name {\n-    Variant,\n+pub enum Base64SubCommand {\n+\n+    #[command(name=\"encode\",about = \"Encode a string to base64\")]\n+    Encode(Base64EncodeOpts),\n+\n+    #[command(name=\"decode\",about = \"Decode a base64 string to base64\")]\n+    Decode(Base64DecodeOpts),\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718271848297,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,5 +16,13 @@\n     Encode(Base64EncodeOpts),\n \n     #[command(name=\"decode\",about = \"Decode a base64 string to base64\")]\n     Decode(Base64DecodeOpts),\n+}\n+\n+pub struct Base64EncodeOpts {\n+    \n+    #[arg(short,long,value_parser = verify_file,default_value =\"-\")]\n+    pub input: String,\n+    #[arg(short,long,value_parser = verify_file,default_value=\"standard\")]\n+    pub format: Base64Format,\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718271880780,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,11 +18,14 @@\n     #[command(name=\"decode\",about = \"Decode a base64 string to base64\")]\n     Decode(Base64DecodeOpts),\n }\n \n+#[derive(Debug,Parser)]\n pub struct Base64EncodeOpts {\n     \n     #[arg(short,long,value_parser = verify_file,default_value =\"-\")]\n     pub input: String,\n-    #[arg(short,long,value_parser = verify_file,default_value=\"standard\")]\n-    pub format: Base64Format,\n+    #[arg(long,value_parser = verify_file,default_value=\"standard\")]\n+    pub fo\n+    \n+    rmat: Base64Format,\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718271976159,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,8 +24,16 @@\n     \n     #[arg(short,long,value_parser = verify_file,default_value =\"-\")]\n     pub input: String,\n     #[arg(long,value_parser = verify_file,default_value=\"standard\")]\n-    pub fo\n-    \n-    rmat: Base64Format,\n-}\n\\ No newline at end of file\n+    pub format: Base64Format,\n+}\n+\n+#[derive(Debug,Parser)]\n+pub struct Base64EncodeOpts {\n+\n+    #[arg(short,long,value_parser = verify_file,default_value = \"-\")]\n+    pub input:String,\n+\n+    pub format:Base64Format,\n+}\n+\n"
+                },
+                {
+                    "date": 1718272075086,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -33,7 +33,8 @@\n \n     #[arg(short,long,value_parser = verify_file,default_value = \"-\")]\n     pub input:String,\n \n+    #[arg(long,value_parser=parse_base64_format,default_value=\"standard\")]\n     pub format:Base64Format,\n }\n \n"
+                },
+                {
+                    "date": 1718272121865,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -37,4 +37,11 @@\n     #[arg(long,value_parser=parse_base64_format,default_value=\"standard\")]\n     pub format:Base64Format,\n }\n \n+#[derive(Debug,Clone,Copy)]\n+pub enum Base64Format{\n+\n+    Standard,\n+    UrlSafe,\n+}\n+\n"
+                },
+                {
+                    "date": 1718272191377,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,4 +44,8 @@\n     Standard,\n     UrlSafe,\n }\n \n+\n+fn parse_base64_format(format:&str)-> Result<Base64Format,anyhow::Error> {\n+    format.parse();\n+}\n"
+                },
+                {
+                    "date": 1718272354192,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -48,4 +48,15 @@\n \n fn parse_base64_format(format:&str)-> Result<Base64Format,anyhow::Error> {\n     format.parse();\n }\n+\n+impl FromStr for Base64Format {\n+    type Err = anyhow::Error;\n+\n+    fn from_str(s:&str) ->Result<Sefl,Self::Err>{\n+        match s {\n+             \"standard\"=>  Ok(Base64Format::Standard)\n+            _ => \n+        }\n+    }\n+}\n"
+                },
+                {
+                    "date": 1718272625385,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -54,9 +54,10 @@\n     type Err = anyhow::Error;\n \n     fn from_str(s:&str) ->Result<Sefl,Self::Err>{\n         match s {\n-             \"standard\"=>  Ok(Base64Format::Standard)\n-            _ => \n+             \"standard\"=>  Ok(Base64Format::Standard),\n+            \"urlsafe\" => Ok(Base64Format::UrlSafe) ,\n+            _=> Err(anyhow::anyhow!(\"Invalid format\")),\n         }\n     }\n }\n"
+                },
+                {
+                    "date": 1718273003319,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -60,4 +60,15 @@\n             _=> Err(anyhow::anyhow!(\"Invalid format\")),\n         }\n     }\n }\n+\n+\n+impl From<Base64Format> for &'static str{\n+\n+    fn from(format:Base64Format) ->Self{\n+        match format {\n+            Base64Format::Standard => \"standard\",\n+            Base64Format::UrlSafe=>\"urlsafe\",\n+        }\n+    }\n+}\n"
+                }
+            ],
+            "date": 1718271450884,
+            "name": "Commit-0",
+            "content": "use std::{fmt,str::FromStr}\nuse clap::Parser;\n\nuse enum_dispatch::enum_dispatch;\n\n\nuse crate::CmDExcetor;\n\nuse super::verify_file;\n\n#[derive(Debug,Parser)]\n#[enum_dispatch(CmDExcetor)]\npub enum Name {\n    Variant,\n}"
+        }
+    ]
+}

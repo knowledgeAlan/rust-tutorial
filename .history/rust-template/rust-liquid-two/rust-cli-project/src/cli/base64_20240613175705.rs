@@ -61,14 +61,3 @@ impl FromStr for Base64Format {
         }
     }
 }
-
-
-impl From<Base64Format> for &'static str{
-
-    fn from(format:Base64Format) ->Self{
-        match format {
-            Base64Format::Standard => "standard",
-            Base64Format::UrlSafe=>"urlsafe",
-        }
-    }
-}
