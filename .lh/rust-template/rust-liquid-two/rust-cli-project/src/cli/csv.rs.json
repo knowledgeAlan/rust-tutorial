@@ -3,11 +3,67 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 14,
             "patches": [
                 {
                     "date": 1718351646917,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1718351884243,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,7 @@\n+use crate::CmDExcetor;\n+\n+use super::verify_file;\n+use clap::Parser;\n+use std::{fmt,str::FromStr};\n+\n+#derive(Debug,Clone,Copy)]\n"
+                },
+                {
+                    "date": 1718351943075,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,6 +3,12 @@\n use super::verify_file;\n use clap::Parser;\n use std::{fmt,str::FromStr};\n \n-#derive(Debug,Clone,Copy)]\n-use crate::CmDExcetor;\n\\ No newline at end of file\n+#[derive(Debug,Clone,Copy)]\n+\n+\n+pub enum OutputFormat {\n+\n+    Json,\n+    Yaml,\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718352053969,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,5 +10,21 @@\n pub enum OutputFormat {\n \n     Json,\n     Yaml,\n+}\n+\n+#[derive(Debug,Parser)]\n+\n+pub struct CsvOps {\n+\n+    pub input:String,\n+\n+    pub output:Option<String>,\n+\n+    pub format:OutputFormat,\n+\n+    pub delimiter:char,\n+\n+    pub header:bool,\n+\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718352094160,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,10 +16,12 @@\n #[derive(Debug,Parser)]\n \n pub struct CsvOps {\n \n+    #[arg(short,long,value_parser=verify_file)])]\n     pub input:String,\n \n+    \n     pub output:Option<String>,\n \n     pub format:OutputFormat,\n \n"
+                },
+                {
+                    "date": 1718352106629,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,9 @@\n \n     #[arg(short,long,value_parser=verify_file)])]\n     pub input:String,\n \n-    \n+    #[arg(short,long)]\n     pub output:Option<String>,\n \n     pub format:OutputFormat,\n \n"
+                },
+                {
+                    "date": 1718352139631,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,8 +22,9 @@\n \n     #[arg(short,long)]\n     pub output:Option<String>,\n \n+    #[arg(long,value_parser=parse_format,default_value=\"json\")]\n     pub format:OutputFormat,\n \n     pub delimiter:char,\n \n"
+                },
+                {
+                    "date": 1718352169002,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,8 +25,9 @@\n \n     #[arg(long,value_parser=parse_format,default_value=\"json\")]\n     pub format:OutputFormat,\n \n+    #[arg(short,long,default_value_t=\",\")]\n     pub delimiter:char,\n \n     pub header:bool,\n \n"
+                },
+                {
+                    "date": 1718352201141,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,7 +28,8 @@\n \n     #[arg(short,long,default_value_t=\",\")]\n     pub delimiter:char,\n \n+    #[arg(long,default_value_t=true)]\n     pub header:bool,\n \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718352206459,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -31,5 +31,7 @@\n \n     #[arg(long,default_value_t=true)]\n     pub header:bool,\n \n-}\n\\ No newline at end of file\n+}\n+\n+\n"
+                },
+                {
+                    "date": 1718352508151,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,50 @@\n+use crate::CmDExcetor;\n+\n+use super::verify_file;\n+use clap::Parser;\n+use std::{fmt,str::FromStr};\n+\n+#[derive(Debug,Clone,Copy)]\n+\n+\n+pub enum OutputFormat {\n+\n+    Json,\n+    Yaml,\n+}\n+\n+#[derive(Debug,Parser)]\n+\n+pub struct CsvOps {\n+\n+    #[arg(short,long,value_parser=verify_file)])]\n+    pub input:String,\n+\n+    #[arg(short,long)]\n+    pub output:Option<String>,\n+\n+    #[arg(long,value_parser=parse_format,default_value=\"json\")]\n+    pub format:OutputFormat,\n+\n+    #[arg(short,long,default_value_t=\",\")]\n+    pub delimiter:char,\n+\n+    #[arg(long,default_value_t=true)]\n+    pub header:bool,\n+\n+}\n+\n+\n+impl CmdExector for CsvOps {\n+\n+    async fn execute(self) -> anyhow::Result<()>{\n+\n+        let output:String = if let Some(output) = self.output{\n+            output\n+        }else{\n+            format!(\"output.{}\",self.format);\n+        };\n+\n+        crate::process_csv(&self.input,output,self.format);\n+    }\n+}\n"
+                },
+                {
+                    "date": 1718352647260,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -47,41 +47,11 @@\n \n         crate::process_csv(&self.input,output,self.format);\n     }\n }\n-use crate::CmDExcetor;\n \n-use super::verify_file;\n-use clap::Parser;\n-use std::{fmt,str::FromStr};\n \n-#[derive(Debug,Clone,Copy)]\n-\n-\n-pub enum OutputFormat {\n-\n-    Json,\n-    Yaml,\n+fn parse_format(format:&str) ->Result<OutputFormat,anyhow::Error> {\n+    format.parse();\n }\n \n-#[derive(Debug,Parser)]\n \n-pub struct CsvOps {\n-\n-    #[arg(short,long,value_parser=verify_file)])]\n-    pub input:String,\n-\n-    #[arg(short,long)]\n-    pub output:Option<String>,\n-\n-    #[arg(long,value_parser=parse_format,default_value=\"json\")]\n-    pub format:OutputFormat,\n-\n-    #[arg(short,long,default_value_t=\",\")]\n-    pub delimiter:char,\n-\n-    #[arg(long,default_value_t=true)]\n-    pub header:bool,\n-\n-}\n-\n-\n"
+                },
+                {
+                    "date": 1718354215490,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -53,5 +53,14 @@\n fn parse_format(format:&str) ->Result<OutputFormat,anyhow::Error> {\n     format.parse();\n }\n \n+impl From<OutputFormat> for &'static str{\n+    fn from(format:OutputFormat) -> Self{\n+        match format {\n+            OutputFormat::Json => \"json\",\n+            OutputFormat::Yaml => \"yaml\",\n+        }\n+    }\n+}\n \n+\n"
+                },
+                {
+                    "date": 1718354399439,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,87 @@\n+use crate::CmDExcetor;\n+\n+use super::verify_file;\n+use clap::Parser;\n+use std::{fmt,str::FromStr};\n+\n+#[derive(Debug,Clone,Copy)]\n+\n+\n+pub enum OutputFormat {\n+\n+    Json,\n+    Yaml,\n+}\n+\n+#[derive(Debug,Parser)]\n+\n+pub struct CsvOps {\n+\n+    #[arg(short,long,value_parser=verify_file)])]\n+    pub input:String,\n+\n+    #[arg(short,long)]\n+    pub output:Option<String>,\n+\n+    #[arg(long,value_parser=parse_format,default_value=\"json\")]\n+    pub format:OutputFormat,\n+\n+    #[arg(short,long,default_value_t=\",\")]\n+    pub delimiter:char,\n+\n+    #[arg(long,default_value_t=true)]\n+    pub header:bool,\n+\n+}\n+\n+\n+impl CmdExector for CsvOps {\n+\n+    async fn execute(self) -> anyhow::Result<()>{\n+\n+        let output:String = if let Some(output) = self.output{\n+            output\n+        }else{\n+            format!(\"output.{}\",self.format);\n+        };\n+\n+        crate::process_csv(&self.input,output,self.format);\n+    }\n+}\n+\n+\n+fn parse_format(format:&str) ->Result<OutputFormat,anyhow::Error> {\n+    format.parse();\n+}\n+\n+impl From<OutputFormat> for &'static str{\n+    fn from(format:OutputFormat) -> Self{\n+        match format {\n+            OutputFormat::Json => \"json\",\n+            OutputFormat::Yaml => \"yaml\",\n+        }\n+    }\n+}\n+\n+\n+impl FromStr for OutputFormat {\n+\n+    type Err = anyhow::Error;\n+\n+    fn from_str(s:&str) -> Result<Self,Self::Err> {\n+       \n+            match s {\n+                \"json\" => Ok(OutputFormat::Json),\n+                \"yaml\" => Ok(OutputFormat::Yaml),\n+                _ => Err(anyhow::anyhow!(\"Invalid format\")),\n+            \n+        }\n+    }\n+    \n+}\n+\n+\n+\n+\n+\n+\n"
+                },
+                {
+                    "date": 1718354467893,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -80,74 +80,16 @@\n     \n }\n \n \n+impl fmt::Display for OutputFormat {\n \n-\n-\n-\n-use crate::CmDExcetor;\n-\n-use super::verify_file;\n-use clap::Parser;\n-use std::{fmt,str::FromStr};\n-\n-#[derive(Debug,Clone,Copy)]\n-\n-\n-pub enum OutputFormat {\n-\n-    Json,\n-    Yaml,\n+    fn fmt(&self, fmt: &mut fmt::Formatter<'_'>) -> fmt::Result {\n+        write!(f,\"{}\",Into::<&str>::info(*self);)\n+    }\n }\n \n-#[derive(Debug,Parser)]\n \n-pub struct CsvOps {\n \n-    #[arg(short,long,value_parser=verify_file)])]\n-    pub input:String,\n \n-    #[arg(short,long)]\n-    pub output:Option<String>,\n \n-    #[arg(long,value_parser=parse_format,default_value=\"json\")]\n-    pub format:OutputFormat,\n \n-    #[arg(short,long,default_value_t=\",\")]\n-    pub delimiter:char,\n-\n-    #[arg(long,default_value_t=true)]\n-    pub header:bool,\n-\n-}\n-\n-\n-impl CmdExector for CsvOps {\n-\n-    async fn execute(self) -> anyhow::Result<()>{\n-\n-        let output:String = if let Some(output) = self.output{\n-            output\n-        }else{\n-            format!(\"output.{}\",self.format);\n-        };\n-\n-        crate::process_csv(&self.input,output,self.format);\n-    }\n-}\n-\n-\n-fn parse_format(format:&str) ->Result<OutputFormat,anyhow::Error> {\n-    format.parse();\n-}\n-\n-impl From<OutputFormat> for &'static str{\n-    fn from(format:OutputFormat) -> Self{\n-        match format {\n-            OutputFormat::Json => \"json\",\n-            OutputFormat::Yaml => \"yaml\",\n-        }\n-    }\n-}\n-\n-\n"
                 }
             ],
             "date": 1718351646917,

@@ -81,14 +81,6 @@ impl FromStr for OutputFormat {
 }
 
 
-impl fmt::Display for OutputFormat {
-
-    fn fmt(&self, fmt: &mut fmt::Formatter<'_'>) -> fmt::Result {
-        write!(f,"{}",Into::<&str>::info(*self);)
-    }
-}
-
-
 
 
 

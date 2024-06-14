@@ -54,42 +54,4 @@ fn parse_format(format:&str) ->Result<OutputFormat,anyhow::Error> {
     format.parse();
 }
 
-impl From<OutputFormat> for &'static str{
-    fn from(format:OutputFormat) -> Self{
-        match format {
-            OutputFormat::Json => "json",
-            OutputFormat::Yaml => "yaml",
-        }
-    }
-}
-
-
-impl FromStr for OutputFormat {
-
-    type Err = anyhow::Error;
-
-    fn from_str(s:&str) -> Result<Self,Self::Err> {
-       
-            match s {
-                "json" => Ok(OutputFormat::Json),
-                "yaml" => Ok(OutputFormat::Yaml),
-                _ => Err(anyhow::anyhow!("Invalid format")),
-            
-        }
-    }
-    
-}
-
-
-impl fmt::Display for OutputFormat {
-
-    fn fmt(&self, fmt: &mut fmt::Formatter<'_'>) -> fmt::Result {
-        write!(f,"{}",Into::<&str>::info(*self);)
-    }
-}
-
-
-
-
-
 
