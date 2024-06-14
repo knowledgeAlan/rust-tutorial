@@ -1,0 +1,30 @@
+{
+    "sourceFile": "rust-template/rust-liquid-two/rust-cli-project/src/cli/http.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1718355292859,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1718355320586,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,6 +10,7 @@\n #[enum_dispatch(CmdExector)]\n \n pub enum HttpSubCommand {\n \n+    #[command(about=\"Serve a directory over HTTP\")]\n     Serve(HttpServeOpts),\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718355426221,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,5 +12,17 @@\n pub enum HttpSubCommand {\n \n     #[command(about=\"Serve a directory over HTTP\")]\n     Serve(HttpServeOpts),\n+}\n+\n+\n+#[derive(Debug,Parser)]\n+\n+pub struct HttpServeOpts {\n+\n+    #[arg(short,long,value_parser=verify_path,default_value = \".\")]\n+    pub dir:PathBuf,\n+\n+    #[arg(short,long,default_value_t = 8080]\n+    pub port: u16,\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718355497694,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,5 +24,14 @@\n     pub dir:PathBuf,\n \n     #[arg(short,long,default_value_t = 8080]\n     pub port: u16,\n+}\n+\n+\n+impl CmdExector for HttpServeOpts {\n+\n+    async fn execute(self)-> anyhow::Result<()> {\n+         \n+         process_http_serve(self.dir,self.port).await;\n+    }\n }\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1718355292859,
+            "name": "Commit-0",
+            "content": "use crate::{process_http_serve,CmdExector};\n\nuse super::verify_path;\n\nuse clap::Parser;\nuse enum_dispatch::enum_dispatch;\nuse std::path::PathBuf;\n\n#[derive(Debug,Parser)]\n#[enum_dispatch(CmdExector)]\n\npub enum HttpSubCommand {\n\n    Serve(HttpServeOpts),\n}"
+        }
+    ]
+}
