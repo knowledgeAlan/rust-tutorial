@@ -87,17 +87,7 @@ impl CmdExector for Base64EncodeOpts {
         let mut reader:Box<dyn Read> = crate::get_reader(&self.input);
         let ret:String = crate::process_encode(&mut reader,self.format)?;
 
-        print!("{}",ret);
-        Ok(());
-    }
-}
-
-impl CmdExector for Base64DecodeOpts {
-    async fn execute(self)-> anyhow::Result<()> {
-
-        let mut reader:Box<dyn Read> = crate::get_reader(&self.input);
-        let ret:String = crate::process_decode(&mut reader,self.format)?;
-        print!("{}",ret);
+        print!("{}",ret );
         Ok(());
     }
 }

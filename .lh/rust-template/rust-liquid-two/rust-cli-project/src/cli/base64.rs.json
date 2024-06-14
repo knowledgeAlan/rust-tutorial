@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 10,
+            "activePatchIndex": 14,
             "patches": [
                 {
                     "date": 1718271450884,
@@ -48,6 +48,22 @@
                 {
                     "date": 1718273003319,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -60,4 +60,15 @@\n             _=> Err(anyhow::anyhow!(\"Invalid format\")),\n         }\n     }\n }\n+\n+\n+impl From<Base64Format> for &'static str{\n+\n+    fn from(format:Base64Format) ->Self{\n+        match format {\n+            Base64Format::Standard => \"standard\",\n+            Base64Format::UrlSafe=>\"urlsafe\",\n+        }\n+    }\n+}\n"
+                },
+                {
+                    "date": 1718351061965,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -71,4 +71,11 @@\n             Base64Format::UrlSafe=>\"urlsafe\",\n         }\n     }\n }\n+\n+\n+impl fmt::Display for Base64Format{\n+    fn fmt(&self, f: &mut fmt::Formatter<'_>)-> fmt::Result{\n+        write!(f,\"{}\",Into::<&str>::info(*self) );\n+    }\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718351160014,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -77,5 +77,12 @@\n impl fmt::Display for Base64Format{\n     fn fmt(&self, f: &mut fmt::Formatter<'_>)-> fmt::Result{\n         write!(f,\"{}\",Into::<&str>::info(*self) );\n     }\n+}\n+\n+impl CmdExector for Base64EncodeOpts {\n+\n+    async fn execute(self)-> anyhow::Result<()>{\n+        Ok(());\n+    }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718351281925,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -82,7 +82,12 @@\n \n impl CmdExector for Base64EncodeOpts {\n \n     async fn execute(self)-> anyhow::Result<()>{\n+\n+        let mut reader:Box<dyn Read> = crate::get_reader(&self.input);\n+        let ret:String = crate::process_encode(&mut reader,self.format)?;\n+\n+        print!(\"{}\",ret );\n         Ok(());\n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718351404718,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -86,8 +86,18 @@\n \n         let mut reader:Box<dyn Read> = crate::get_reader(&self.input);\n         let ret:String = crate::process_encode(&mut reader,self.format)?;\n \n-        print!(\"{}\",ret );\n+        print!(\"{}\",ret);\n         Ok(());\n     }\n+}\n+\n+impl CmdExector for Base64DecodeOpts {\n+    async fn execute(self)-> anyhow::Result<()> {\n+\n+        let mut reader:Box<dyn Read> = crate::get_reader(&self.input);\n+        let ret:String = crate::process_decode(&mut reader,self.format)?;\n+        print!(\"{}\",ret);\n+        Ok(());\n+    }\n }\n\\ No newline at end of file\n"
                 }
             ],
             "date": 1718271450884,

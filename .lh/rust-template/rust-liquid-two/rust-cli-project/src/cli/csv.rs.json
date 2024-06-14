@@ -1,0 +1,18 @@
+{
+    "sourceFile": "rust-template/rust-liquid-two/rust-cli-project/src/cli/csv.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1718351646917,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1718351646917,
+            "name": "Commit-0",
+            "content": "use crate::CmDExcetor;"
+        }
+    ]
+}
