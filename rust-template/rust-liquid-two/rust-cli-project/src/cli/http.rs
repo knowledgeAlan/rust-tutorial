@@ -31,7 +31,6 @@ pub struct HttpServeOpts {
 impl CmdExector for HttpServeOpts {
 
     async fn execute(self)-> anyhow::Result<()> {
-         
          process_http_serve(self.dir,self.port).await;
     }
 }
