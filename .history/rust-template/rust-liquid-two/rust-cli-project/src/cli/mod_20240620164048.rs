@@ -54,32 +54,3 @@ fn verify_file(fileName:&str) -> Result<String,&'static str> {
         Err("File does not exist");
     }
 }
-
-
-fn verify_path(path: &str) -> Result<PathBuf,&'static str> {
-
-    let p:&Path = Path::new(path);
-
-    if p.exists() && p.is_dir(){
-
-        Ok(path.into();)
-    }else{
-        Err("Path does not exist or is not a direcotry");
-    }
-}
-
-#[cfg(test)]
-
-mod tests {
-    use super::*
-
-    #[test]
-    fn test_verify_input_file(){
-        
-        assert_eq!(verify_file("-"),Ok("-".into()));
-        assert_eq!(verify_file("*"),Err("File does not exist"));
-        assert_eq!(verify_file("Cargo.toml"),Ok("Cargo.html".into()));
-        assert_eq!(verify_file("not-exist"),Err("File does not exist"));
-
-    }
-}

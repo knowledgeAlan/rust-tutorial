@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 3,
+            "activePatchIndex": 10,
             "patches": [
                 {
                     "date": 1718183194568,
@@ -20,6 +20,34 @@
                 {
                     "date": 1718355132697,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,3 +1,4 @@\n mod base64;\n mod csv;\n-mod genpass;\n\\ No newline at end of file\n+mod genpass;\n+mod http;\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718872395191,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,4 +1,13 @@\n mod base64;\n mod csv;\n mod genpass;\n-mod http;\n\\ No newline at end of file\n+mod http;\n+mod text;\n+\n+use clap::Parser;\n+use enum_dispatch::enum_dispatch;\n+use std::path::{Path,PathBuf};\n+\n+\n+pub use self::{base64::*,csv::*, genpass::*,http::*, text::*};\n+\n"
+                },
+                {
+                    "date": 1718872495276,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,4 +10,12 @@\n \n \n pub use self::{base64::*,csv::*, genpass::*,http::*, text::*};\n \n+#[derive(Debug,Parser)]]\n+#[command(name = \"rcli\", version,author,about,long_about = None)]\n+\n+pub struct Opts {\n+\n+    #[command(subcommand)]\n+    pub cmd:Subcommand,\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718872748405,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,5 +17,30 @@\n pub struct Opts {\n \n     #[command(subcommand)]\n     pub cmd:Subcommand,\n-}\n\\ No newline at end of file\n+}\n+\n+#[derive(Debug,Parser)]\n+#[enum_dispatch(CmdExector)]\n+\n+pub enum Subcommand {\n+\n+\n+    #[command(name =\"csv\",about \"Show CSV,or convert CSV to other formats\")]\n+    Csv(CsvOpts),\n+\n+    #[command(name = \"genpass\",about =\"Generate a random password\")]\n+    GenPass(GenPassOpts),\n+\n+    #[command(subcommand,about=\"Base64 encode/decode\")]\n+    Base64(Base64SubCommand),\n+\n+    #[command(subcommand,about=\"Text sign/verify\")]\n+    Text(TextSubCommand),\n+\n+    #[command(subcommand,about=\"Http server\")]\n+    Http(HttpSubCommand),\n+\n+}\n+\n+\n"
+                },
+                {
+                    "date": 1718872848769,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -43,4 +43,14 @@\n \n }\n \n \n+fn verify_file(fileName:&str) -> Result<String,&'static str> {\n+\n+\n+    if fileName == \"-\" || Path::new(fileName).exists(){\n+\n+        Ok(fileName.into());\n+    }else{\n+        Err(\"File does not exist\");\n+    }\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718872966800,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,69 @@\n+mod base64;\n+mod csv;\n+mod genpass;\n+mod http;\n+mod text;\n+\n+use clap::Parser;\n+use enum_dispatch::enum_dispatch;\n+use std::path::{Path,PathBuf};\n+\n+\n+pub use self::{base64::*,csv::*, genpass::*,http::*, text::*};\n+\n+#[derive(Debug,Parser)]]\n+#[command(name = \"rcli\", version,author,about,long_about = None)]\n+\n+pub struct Opts {\n+\n+    #[command(subcommand)]\n+    pub cmd:Subcommand,\n+}\n+\n+#[derive(Debug,Parser)]\n+#[enum_dispatch(CmdExector)]\n+\n+pub enum Subcommand {\n+\n+\n+    #[command(name =\"csv\",about \"Show CSV,or convert CSV to other formats\")]\n+    Csv(CsvOpts),\n+\n+    #[command(name = \"genpass\",about =\"Generate a random password\")]\n+    GenPass(GenPassOpts),\n+\n+    #[command(subcommand,about=\"Base64 encode/decode\")]\n+    Base64(Base64SubCommand),\n+\n+    #[command(subcommand,about=\"Text sign/verify\")]\n+    Text(TextSubCommand),\n+\n+    #[command(subcommand,about=\"Http server\")]\n+    Http(HttpSubCommand),\n+\n+}\n+\n+\n+fn verify_file(fileName:&str) -> Result<String,&'static str> {\n+\n+\n+    if fileName == \"-\" || Path::new(fileName).exists(){\n+\n+        Ok(fileName.into());\n+    }else{\n+        Err(\"File does not exist\");\n+    }\n+}\n+\n+\n+fn verify_path(path: &str) -> Result<PathBuf,&'static str> {\n+\n+    let p:&Path = Path::new(path);\n+\n+    if p.exists() && p.is_dir(){\n+\n+        Ok(path.into();)\n+    }else{\n+        Err(\"Path does not exist or is not a direcotry\");\n+    }\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718873146179,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,60 +66,19 @@\n     }else{\n         Err(\"Path does not exist or is not a direcotry\");\n     }\n }\n-mod base64;\n-mod csv;\n-mod genpass;\n-mod http;\n-mod text;\n \n-use clap::Parser;\n-use enum_dispatch::enum_dispatch;\n-use std::path::{Path,PathBuf};\n+#[cfg(test)]\n \n+mod tests {\n+    use super::*\n \n-pub use self::{base64::*,csv::*, genpass::*,http::*, text::*};\n+    #[test]\n+    fn test_verify_input_file(){\n+        \n+        assert_eq!(verify_file(\"-\"),Ok(\"-\".into()));\n+        assert_eq!(verify_file(\"*\"),Err(\"File does not exist\"));\n+        assert_eq!(verify_file(\"Cargo.toml\"),Ok(\"Cargo.html\".into()));\n \n-#[derive(Debug,Parser)]]\n-#[command(name = \"rcli\", version,author,about,long_about = None)]\n-\n-pub struct Opts {\n-\n-    #[command(subcommand)]\n-    pub cmd:Subcommand,\n-}\n-\n-#[derive(Debug,Parser)]\n-#[enum_dispatch(CmdExector)]\n-\n-pub enum Subcommand {\n-\n-\n-    #[command(name =\"csv\",about \"Show CSV,or convert CSV to other formats\")]\n-    Csv(CsvOpts),\n-\n-    #[command(name = \"genpass\",about =\"Generate a random password\")]\n-    GenPass(GenPassOpts),\n-\n-    #[command(subcommand,about=\"Base64 encode/decode\")]\n-    Base64(Base64SubCommand),\n-\n-    #[command(subcommand,about=\"Text sign/verify\")]\n-    Text(TextSubCommand),\n-\n-    #[command(subcommand,about=\"Http server\")]\n-    Http(HttpSubCommand),\n-\n-}\n-\n-\n-fn verify_file(fileName:&str) -> Result<String,&'static str> {\n-\n-\n-    if fileName == \"-\" || Path::new(fileName).exists(){\n-\n-        Ok(fileName.into());\n-    }else{\n-        Err(\"File does not exist\");\n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718873192104,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -78,7 +78,8 @@\n         \n         assert_eq!(verify_file(\"-\"),Ok(\"-\".into()));\n         assert_eq!(verify_file(\"*\"),Err(\"File does not exist\"));\n         assert_eq!(verify_file(\"Cargo.toml\"),Ok(\"Cargo.html\".into()));\n+        assert_eq!(verify_file(\"not-exist\"),Err(\"File does not exist\"));\n \n     }\n }\n\\ No newline at end of file\n"
                 }
             ],
             "date": 1718183194568,
