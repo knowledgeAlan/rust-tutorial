@@ -1,0 +1,58 @@
+{
+    "sourceFile": "rust-template/rust-liquid-two/rust-cli-project/src/process/b64.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 10,
+            "patches": [
+                {
+                    "date": 1718873829774,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1718873917442,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,5 +2,8 @@\n use anyhow::Result;\n use base64::{\n     engine::general_purpose::{STANDARD,URL_SAFE_NO_PAD},\n     Engine as _,\n-}\n\\ No newline at end of file\n+};\n+\n+use std::io::Read;\n+\n"
+                },
+                {
+                    "date": 1718874206155,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,4 +6,12 @@\n };\n \n use std::io::Read;\n \n+pub fn process_endcode(reader:&mut dyn Read,format:Base64Format) -> Result<String>{\n+\n+    let mut buf:Vec<u8> = Vec::new();\n+\n+    reader.read_to_end(&mut buf)?;\n+    \n+}\n+\n"
+                },
+                {
+                    "date": 1718874326420,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,7 +11,11 @@\n \n     let mut buf:Vec<u8> = Vec::new();\n \n     reader.read_to_end(&mut buf)?;\n-    \n+\n+    let encoded:String = match format {\n+        Base64Format::Standard => STANDARD.encode(&buf);\n+        \n+    }\n }\n \n"
+                },
+                {
+                    "date": 1718874400363,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,8 +14,10 @@\n     reader.read_to_end(&mut buf)?;\n \n     let encoded:String = match format {\n         Base64Format::Standard => STANDARD.encode(&buf);\n-        \n-    }\n+        Base64Format::UrlSafe => URL_SAFE_NO_PAD.encode(&buf),\n+    };\n+\n+    Ok(encoded);\n }\n \n"
+                },
+                {
+                    "date": 1718874478240,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,4 +20,13 @@\n \n     Ok(encoded);\n }\n \n+pub fn process_decode(reader:&mut dyn Read,format:Base64Format) -> Result<String>{\n+\n+    let mut buf:String = String::new();\n+\n+    reader.read_to_string(&mut buf)?;\n+\n+    \n+}\n+\n"
+                },
+                {
+                    "date": 1718874583684,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -26,7 +26,13 @@\n     let mut buf:String = String::new();\n \n     reader.read_to_string(&mut buf)?;\n \n-    \n+    let buf:&str = buf.trim();\n+\n+    let decoded:Vec<u8> = match format {\n+        Base64Format::Standard => STANDARD.decode(buf)?,\n+        Base64Format::UrlSafe => URL_SAFE_NO_PAD.decode(&buf)?,\n+    };\n+\n }\n \n"
+                },
+                {
+                    "date": 1718874608524,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -33,6 +33,8 @@\n         Base64Format::Standard => STANDARD.decode(buf)?,\n         Base64Format::UrlSafe => URL_SAFE_NO_PAD.decode(&buf)?,\n     };\n \n+    Ok(String::from_utf8(decoded)?);\n+\n }\n \n"
+                },
+                {
+                    "date": 1718875092544,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -37,4 +37,21 @@\n     Ok(String::from_utf8(decoded)?);\n \n }\n \n+#[cfg(test)]\n+mod tests {\n+\n+    use super::*;\n+    use crate::get_reader;\n+\n+    #[test]\n+    fn test_process_encode()-> Result<()> {\n+\n+        let input:&str = \"Cargo.toml\";\n+\n+\n+        let mut reader:Box<dyn Read> = get_reader(input);\n+        let format:Base64Format = Base64Format::Standard;\n+        assert!(process_encode(&mut reader,format).is_ok());\n+    }\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718875098683,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -52,6 +52,7 @@\n \n         let mut reader:Box<dyn Read> = get_reader(input);\n         let format:Base64Format = Base64Format::Standard;\n         assert!(process_encode(&mut reader,format).is_ok());\n+        Ok(());\n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1718875210693,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -54,5 +54,18 @@\n         let format:Base64Format = Base64Format::Standard;\n         assert!(process_encode(&mut reader,format).is_ok());\n         Ok(());\n     }\n+\n+\n+    #[test]\n+    fn test_process_encode() -> Result<()> {\n+\n+        let input:&str = \"fixtures/b64.txt\";\n+        let mut reader:Box<dyn Read> = get_reader(input)?;\n+\n+        let format:Base64Format = Base64Format::UrlSafe;\n+        process_decode(&mut reader,format)?;\n+\n+        Ok(());\n+    }\n }\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1718873829774,
+            "name": "Commit-0",
+            "content": "use crate::Base64Format;\nuse anyhow::Result;\nuse base64::{\n    engine::general_purpose::{STANDARD,URL_SAFE_NO_PAD},\n    Engine as _,\n}"
+        }
+    ]
+}
