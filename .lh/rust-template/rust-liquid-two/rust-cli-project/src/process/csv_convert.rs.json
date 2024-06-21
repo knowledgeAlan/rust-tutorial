@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 6,
+            "activePatchIndex": 7,
             "patches": [
                 {
                     "date": 1718875298493,
@@ -32,6 +32,10 @@
                 {
                     "date": 1718875846929,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,5 +15,7 @@\n     dob:String,\n     nationality:String,\n     #[serde(rename=\"Kit Number\")]\n     kit:u8,\n-}\n\\ No newline at end of file\n+}\n+\n+\n"
+                },
+                {
+                    "date": 1718965699850,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,4 +18,9 @@\n     kit:u8,\n }\n \n \n+\n+struct fn process_csv(input:&str,output:String,format:OutputFormat) ->Result<()>{\n+\n+    \n+}\n\\ No newline at end of file\n"
                 }
             ],
             "date": 1718875298493,
