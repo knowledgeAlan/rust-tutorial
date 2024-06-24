@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 7,
+            "activePatchIndex": 16,
             "patches": [
                 {
                     "date": 1718875298493,
@@ -36,6 +36,42 @@
                 {
                     "date": 1718965699850,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,4 +18,9 @@\n     kit:u8,\n }\n \n \n+\n+struct fn process_csv(input:&str,output:String,format:OutputFormat) ->Result<()>{\n+\n+    \n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719210623875,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,6 +21,7 @@\n \n \n struct fn process_csv(input:&str,output:String,format:OutputFormat) ->Result<()>{\n \n+    let mut reader:Reader<File> = Reader::from_path(input)?;\n     \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719210651554,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,6 +22,8 @@\n \n struct fn process_csv(input:&str,output:String,format:OutputFormat) ->Result<()>{\n \n     let mut reader:Reader<File> = Reader::from_path(input)?;\n+    let mut ret:Vec<Value> = Vec::with_capacity(128);\n     \n+    \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719210675274,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -23,7 +23,8 @@\n struct fn process_csv(input:&str,output:String,format:OutputFormat) ->Result<()>{\n \n     let mut reader:Reader<File> = Reader::from_path(input)?;\n     let mut ret:Vec<Value> = Vec::with_capacity(128);\n+    let headers:StrngRecord = reader.headers()?.clone();\n     \n     \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719210722958,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,7 +24,12 @@\n \n     let mut reader:Reader<File> = Reader::from_path(input)?;\n     let mut ret:Vec<Value> = Vec::with_capacity(128);\n     let headers:StrngRecord = reader.headers()?.clone();\n+\n+    for result:Result<StringRecord,Error> in reader.records(){\n+\n+        let record : StringRecord = result?;\n+        \n+    }\n     \n-    \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719210837971,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,8 +28,11 @@\n \n     for result:Result<StringRecord,Error> in reader.records(){\n \n         let record : StringRecord = result?;\n-        \n+\n+        let json_value:Value = headers.iter()\n+            .zip(record.iter())\n+            .collect::<serde_json::Value>();\n     }\n     \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719210858338,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -32,7 +32,9 @@\n \n         let json_value:Value = headers.iter()\n             .zip(record.iter())\n             .collect::<serde_json::Value>();\n+\n+        ret.push(json_value);\n     }\n     \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719210949544,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -35,6 +35,11 @@\n             .collect::<serde_json::Value>();\n \n         ret.push(json_value);\n     }\n+\n+    let content:String = match format {\n+         OutputFormat::Json => serde_json::to_string_pretty(&ret)?,\n+        OutputFormat::Yaml => serde_yaml::to_string(&ret)?, \n+    }\n     \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719210969037,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -39,7 +39,9 @@\n \n     let content:String = match format {\n          OutputFormat::Json => serde_json::to_string_pretty(&ret)?,\n         OutputFormat::Yaml => serde_yaml::to_string(&ret)?, \n-    }\n+    };\n+\n+    fs::write!(output,content )?;\n     \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719210976108,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -42,6 +42,7 @@\n         OutputFormat::Yaml => serde_yaml::to_string(&ret)?, \n     };\n \n     fs::write!(output,content )?;\n+    Ok(())\n     \n }\n\\ No newline at end of file\n"
                 }
             ],
             "date": 1718875298493,

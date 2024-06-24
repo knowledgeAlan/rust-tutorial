@@ -40,9 +40,6 @@ struct fn process_csv(input:&str,output:String,format:OutputFormat) ->Result<()>
     let content:String = match format {
          OutputFormat::Json => serde_json::to_string_pretty(&ret)?,
         OutputFormat::Yaml => serde_yaml::to_string(&ret)?, 
-    };
-
-    fs::write!(output,content )?;
-    Ok(())
+    }
     
 }

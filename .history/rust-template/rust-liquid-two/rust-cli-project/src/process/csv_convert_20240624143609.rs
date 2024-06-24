@@ -43,6 +43,5 @@ struct fn process_csv(input:&str,output:String,format:OutputFormat) ->Result<()>
     };
 
     fs::write!(output,content )?;
-    Ok(())
     
 }
