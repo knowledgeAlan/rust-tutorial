@@ -1,0 +1,82 @@
+{
+    "sourceFile": "rust-template/rust-liquid-two/rust-cli-project/src/process/http_serv.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 16,
+            "patches": [
+                {
+                    "date": 1719212508854,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1719212698649,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,6 +4,8 @@\n     extract::{Path,State},\n     http::StatusCode,\n     routing::get,\n     Router,\n-    \n-}\n\\ No newline at end of file\n+\n+};\n+\n+use std::{net::SocketAddr,path::PathBuf,sync::Arc};\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719212744419,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,5 +7,7 @@\n     Router,\n \n };\n \n-use std::{net::SocketAddr,path::PathBuf,sync::Arc};\n\\ No newline at end of file\n+use std::{net::SocketAddr,path::PathBuf,sync::Arc};\n+use tower_http::services::ServeDir;\n+use tracing::{info,warn};\n"
+                },
+                {
+                    "date": 1719212859327,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,4 +10,11 @@\n \n use std::{net::SocketAddr,path::PathBuf,sync::Arc};\n use tower_http::services::ServeDir;\n use tracing::{info,warn};\n+\n+\n+#[derive(Debug)]\n+\n+struct HttpServeState{\n+    path: PathBuf,\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719212904924,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,5 +16,11 @@\n #[derive(Debug)]\n \n struct HttpServeState{\n     path: PathBuf,\n+}\n+\n+\n+pub async fn process_http_serve(path:PathBuf,port:u16)-> Result<()>{\n+\n+    \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719213017481,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,6 +21,9 @@\n \n \n pub async fn process_http_serve(path:PathBuf,port:u16)-> Result<()>{\n \n+\n+    let addr:SocketAddr = SocketAddr::from(([0,0,0,0],port));\n+    info!(\"Serving {:?} on {}\",path,addr);\n     \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719213044762,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,6 +24,8 @@\n \n \n     let addr:SocketAddr = SocketAddr::from(([0,0,0,0],port));\n     info!(\"Serving {:?} on {}\",path,addr);\n-    \n+\n+\n+    let state:HttpServeState = HttpServeState{path:path.clone()};\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719213283979,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,5 +27,15 @@\n     info!(\"Serving {:?} on {}\",path,addr);\n \n \n     let state:HttpServeState = HttpServeState{path:path.clone()};\n+\n+    let router:Router = Router::new().nest_service(\"/tower\",ServeDir::new(path))\n+        .route(\"/*path\",get(file_handler))\n+        .with_state(AAarc::new(state));\n+\n+\n+    let listener:tokio::new::TcpListener = tokio::net::TcpListener::bind(addr).await?;\n+    axum::serve(listener,router).await?;\n+\n+    Ok(());\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719213444253,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -37,5 +37,17 @@\n     let listener:tokio::new::TcpListener = tokio::net::TcpListener::bind(addr).await?;\n     axum::serve(listener,router).await?;\n \n     Ok(());\n-}\n\\ No newline at end of file\n+}\n+\n+\n+async fn file_handler(State(state):State<Arc<HttpServState>>,\n+        Path(path):Path<String>,\n+        )->(StatusCode,String) {\n+\n+            let p:PathBuf = std::path:Path::new(&state.path).join(path);\n+            info!(\"Reading file {:?}\",p);\n+\n+            \n+\n+        }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719213546726,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -47,7 +47,11 @@\n \n             let p:PathBuf = std::path:Path::new(&state.path).join(path);\n             info!(\"Reading file {:?}\",p);\n \n-            \n+            if !p.exists() {\n \n+                StatusCode::NotFound,\n+                format!(\"File {} note found\",p.display());\n+            }\n+\n         }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719213719613,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -51,7 +51,20 @@\n             if !p.exists() {\n \n                 StatusCode::NotFound,\n                 format!(\"File {} note found\",p.display());\n+            }else{\n+\n+                match tokio::fs::read_to_string(p).await {\n+                    Ok(content)=>{\n+                        info!(\"Read {} bytes\",content.len());\n+                        (StatusCode::OK,content)\n+                    }\n+\n+                    Err(e) =>{\n+                        warn(\"Error reading file:{:?}\",e);\n+                        (StatusCode::INTERNAL_SERVER_ERROR,e.to_string())\n+                    }\n+                }\n             }\n \n         }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719213809626,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,5 +66,14 @@\n                     }\n                 }\n             }\n \n-        }\n\\ No newline at end of file\n+        }\n+\n+\n+\n+\n+#[cfg(test)]\n+\n+mod tests{\n+    \n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719213905853,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -74,6 +74,15 @@\n \n #[cfg(test)]\n \n mod tests{\n-    \n+\n+    use super::*;\n+\n+    #[tokio::test]\n+     async fn test_file_handler() {\n+\n+        let state:Arc<HttpServeState> = Arc::new(HttpServeState{\n+            path:PathBuf::from(\".\"),\n+        });\n+     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719213975613,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -83,6 +83,9 @@\n \n         let state:Arc<HttpServeState> = Arc::new(HttpServeState{\n             path:PathBuf::from(\".\"),\n         });\n+\n+\n+        let (status,content) = file_handler(State(state),Path(\"Cargo.toml\".to_string())).await;\n      }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719213988506,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,93 @@\n+use anyhow::Result;\n+\n+use axum::{\n+    extract::{Path,State},\n+    http::StatusCode,\n+    routing::get,\n+    Router,\n+\n+};\n+\n+use std::{net::SocketAddr,path::PathBuf,sync::Arc};\n+use tower_http::services::ServeDir;\n+use tracing::{info,warn};\n+\n+\n+#[derive(Debug)]\n+\n+struct HttpServeState{\n+    path: PathBuf,\n+}\n+\n+\n+pub async fn process_http_serve(path:PathBuf,port:u16)-> Result<()>{\n+\n+\n+    let addr:SocketAddr = SocketAddr::from(([0,0,0,0],port));\n+    info!(\"Serving {:?} on {}\",path,addr);\n+\n+\n+    let state:HttpServeState = HttpServeState{path:path.clone()};\n+\n+    let router:Router = Router::new().nest_service(\"/tower\",ServeDir::new(path))\n+        .route(\"/*path\",get(file_handler))\n+        .with_state(AAarc::new(state));\n+\n+\n+    let listener:tokio::new::TcpListener = tokio::net::TcpListener::bind(addr).await?;\n+    axum::serve(listener,router).await?;\n+\n+    Ok(());\n+}\n+\n+\n+async fn file_handler(State(state):State<Arc<HttpServState>>,\n+        Path(path):Path<String>,\n+        )->(StatusCode,String) {\n+\n+            let p:PathBuf = std::path:Path::new(&state.path).join(path);\n+            info!(\"Reading file {:?}\",p);\n+\n+            if !p.exists() {\n+\n+                StatusCode::NotFound,\n+                format!(\"File {} note found\",p.display());\n+            }else{\n+\n+                match tokio::fs::read_to_string(p).await {\n+                    Ok(content)=>{\n+                        info!(\"Read {} bytes\",content.len());\n+                        (StatusCode::OK,content)\n+                    }\n+\n+                    Err(e) =>{\n+                        warn(\"Error reading file:{:?}\",e);\n+                        (StatusCode::INTERNAL_SERVER_ERROR,e.to_string())\n+                    }\n+                }\n+            }\n+\n+        }\n+\n+\n+\n+\n+#[cfg(test)]\n+\n+mod tests{\n+\n+    use super::*;\n+\n+    #[tokio::test]\n+     async fn test_file_handler() {\n+\n+        let state:Arc<HttpServeState> = Arc::new(HttpServeState{\n+            path:PathBuf::from(\".\"),\n+        });\n+\n+\n+        let (status,content) = file_handler(State(state),Path(\"Cargo.toml\".to_string())).await;\n+\n+        assert_eq!(status,StatusCode::OK);\n+     }\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719214016964,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -88,97 +88,7 @@\n \n         let (status,content) = file_handler(State(state),Path(\"Cargo.toml\".to_string())).await;\n \n         assert_eq!(status,StatusCode::OK);\n+        assert!(content.trim().start_with(\"[package]\");\n      }\n-}\n-use anyhow::Result;\n-\n-use axum::{\n-    extract::{Path,State},\n-    http::StatusCode,\n-    routing::get,\n-    Router,\n-\n-};\n-\n-use std::{net::SocketAddr,path::PathBuf,sync::Arc};\n-use tower_http::services::ServeDir;\n-use tracing::{info,warn};\n-\n-\n-#[derive(Debug)]\n-\n-struct HttpServeState{\n-    path: PathBuf,\n-}\n-\n-\n-pub async fn process_http_serve(path:PathBuf,port:u16)-> Result<()>{\n-\n-\n-    let addr:SocketAddr = SocketAddr::from(([0,0,0,0],port));\n-    info!(\"Serving {:?} on {}\",path,addr);\n-\n-\n-    let state:HttpServeState = HttpServeState{path:path.clone()};\n-\n-    let router:Router = Router::new().nest_service(\"/tower\",ServeDir::new(path))\n-        .route(\"/*path\",get(file_handler))\n-        .with_state(AAarc::new(state));\n-\n-\n-    let listener:tokio::new::TcpListener = tokio::net::TcpListener::bind(addr).await?;\n-    axum::serve(listener,router).await?;\n-\n-    Ok(());\n-}\n-\n-\n-async fn file_handler(State(state):State<Arc<HttpServState>>,\n-        Path(path):Path<String>,\n-        )->(StatusCode,String) {\n-\n-            let p:PathBuf = std::path:Path::new(&state.path).join(path);\n-            info!(\"Reading file {:?}\",p);\n-\n-            if !p.exists() {\n-\n-                StatusCode::NotFound,\n-                format!(\"File {} note found\",p.display());\n-            }else{\n-\n-                match tokio::fs::read_to_string(p).await {\n-                    Ok(content)=>{\n-                        info!(\"Read {} bytes\",content.len());\n-                        (StatusCode::OK,content)\n-                    }\n-\n-                    Err(e) =>{\n-                        warn(\"Error reading file:{:?}\",e);\n-                        (StatusCode::INTERNAL_SERVER_ERROR,e.to_string())\n-                    }\n-                }\n-            }\n-\n-        }\n-\n-\n-\n-\n-#[cfg(test)]\n-\n-mod tests{\n-\n-    use super::*;\n-\n-    #[tokio::test]\n-     async fn test_file_handler() {\n-\n-        let state:Arc<HttpServeState> = Arc::new(HttpServeState{\n-            path:PathBuf::from(\".\"),\n-        });\n-\n-\n-        let (status,content) = file_handler(State(state),Path(\"Cargo.toml\".to_string())).await;\n-     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719214023470,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,94 @@\n+use anyhow::Result;\n+\n+use axum::{\n+    extract::{Path,State},\n+    http::StatusCode,\n+    routing::get,\n+    Router,\n+\n+};\n+\n+use std::{net::SocketAddr,path::PathBuf,sync::Arc};\n+use tower_http::services::ServeDir;\n+use tracing::{info,warn};\n+\n+\n+#[derive(Debug)]\n+\n+struct HttpServeState{\n+    path: PathBuf,\n+}\n+\n+\n+pub async fn process_http_serve(path:PathBuf,port:u16)-> Result<()>{\n+\n+\n+    let addr:SocketAddr = SocketAddr::from(([0,0,0,0],port));\n+    info!(\"Serving {:?} on {}\",path,addr);\n+\n+\n+    let state:HttpServeState = HttpServeState{path:path.clone()};\n+\n+    let router:Router = Router::new().nest_service(\"/tower\",ServeDir::new(path))\n+        .route(\"/*path\",get(file_handler))\n+        .with_state(AAarc::new(state));\n+\n+\n+    let listener:tokio::new::TcpListener = tokio::net::TcpListener::bind(addr).await?;\n+    axum::serve(listener,router).await?;\n+\n+    Ok(());\n+}\n+\n+\n+async fn file_handler(State(state):State<Arc<HttpServState>>,\n+        Path(path):Path<String>,\n+        )->(StatusCode,String) {\n+\n+            let p:PathBuf = std::path:Path::new(&state.path).join(path);\n+            info!(\"Reading file {:?}\",p);\n+\n+            if !p.exists() {\n+\n+                StatusCode::NotFound,\n+                format!(\"File {} note found\",p.display());\n+            }else{\n+\n+                match tokio::fs::read_to_string(p).await {\n+                    Ok(content)=>{\n+                        info!(\"Read {} bytes\",content.len());\n+                        (StatusCode::OK,content)\n+                    }\n+\n+                    Err(e) =>{\n+                        warn(\"Error reading file:{:?}\",e);\n+                        (StatusCode::INTERNAL_SERVER_ERROR,e.to_string())\n+                    }\n+                }\n+            }\n+\n+        }\n+\n+\n+\n+\n+#[cfg(test)]\n+\n+mod tests{\n+\n+    use super::*;\n+\n+    #[tokio::test]\n+     async fn test_file_handler() {\n+\n+        let state:Arc<HttpServeState> = Arc::new(HttpServeState{\n+            path:PathBuf::from(\".\"),\n+        });\n+\n+\n+        let (status,content) = file_handler(State(state),Path(\"Cargo.toml\".to_string())).await;\n+\n+        assert_eq!(status,StatusCode::OK);\n+        assert!(content.trim().start_with(\"[package]\"));\n+     }\n+}\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1719212508854,
+            "name": "Commit-0",
+            "content": "use anyhow::Result;\n\nuse axum::{\n    extract::{Path,State},\n    http::StatusCode,\n    routing::get,\n    Router,\n    \n}"
+        }
+    ]
+}
