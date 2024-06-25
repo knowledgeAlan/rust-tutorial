@@ -156,11 +156,7 @@ pub fn process_text_key_generate(format:TextSignFormat)-> Result<HashMap<&'stati
 
 
 #[cfg(test)]
-mod tests {
+mod test {
     use super::*;
-    use base64::{engine::general_purpose::URL_SAFE_NO_PAD,Engine};
-
-    const KEY:&[u8] = include_bytes!("../../fixtures/blake3.txt");
-
-    #[cfg(test)]
+    
 }

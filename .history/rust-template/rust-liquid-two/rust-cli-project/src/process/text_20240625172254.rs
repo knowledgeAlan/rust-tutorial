@@ -145,22 +145,3 @@ pub fn process_text_verify(reader:&mut dyn Read,key:&[u8],format:TextSignFormat)
 
     verifier.verify(reader,sig);
 }
-
-
-pub fn process_text_key_generate(format:TextSignFormat)-> Result<HashMap<&'static str,Vec<u8>>>{
-    match format {
-        TextSignFormat::Blake3 => Blake3::generate(),
-        TextSignFormat:Ed25519 => Ed255195Signer::generate();,
-    }
-}
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use base64::{engine::general_purpose::URL_SAFE_NO_PAD,Engine};
-
-    const KEY:&[u8] = include_bytes!("../../fixtures/blake3.txt");
-
-    #[cfg(test)]
-}

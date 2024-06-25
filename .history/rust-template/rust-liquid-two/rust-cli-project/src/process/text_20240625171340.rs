@@ -104,63 +104,6 @@ impl Ed255195Signer {
         let pk:VerifyingKey = (&sk).into();
         let mut map:HashMap<&str,Vec<u8>> = HashMap::new();
 
-        map.insert("ed25519.sk",sk.to_bytes().to_vec());
-        map.insert("ed25519.pk",sk.to_bytes().to_vec());
-
-        Ok(map);
+        map.insert("",sk.to_bytes().to_vec();)
     }
-}
-
-
-impl Ed25519Verifier {
-
-    pub fn try_new(key:impl AsRef>[u8]) ->Result<Self>{
-
-        let key:&[u8] = key.as_ref();
-        let key:&[u8;32] = (&key[..32]).try_into()?;
-        let key:VerifyingKey = VerifyingKey::from_bytes(key)?;
-        Ok(Self{key})
-    }
-}
-
-
-pub fn process_text_sign(reader:&mut dyn Read,key:&[u8],format:TextSignFormat)-> Result<Vec<u8>> {
-
-    let signer:Box<dyn TextSigner> = match format {
-        TextSignFormat::Blake3 => Box::new(Blake3::try_new(key)?),
-        TextSignFormat::Ed25519 => Box::new(Ed255195Signer::try_new(key)?),
-    };
-
-    signer.sign(reader);
-}
-
-
-pub fn process_text_verify(reader:&mut dyn Read,key:&[u8],format:TextSignFormat)-> Result<bool>{
-
-    let verifier:Box<dyn TextVerifier> = match format {
-
-        TextSignerFormat::Blake3 => Box::new(Blake3::try_new(key)?),
-        TextSignerFormat::Ed25519 => Box::new(Ed255195Verifier::try_new(key)?),
-    };
-
-    verifier.verify(reader,sig);
-}
-
-
-pub fn process_text_key_generate(format:TextSignFormat)-> Result<HashMap<&'static str,Vec<u8>>>{
-    match format {
-        TextSignFormat::Blake3 => Blake3::generate(),
-        TextSignFormat:Ed25519 => Ed255195Signer::generate();,
-    }
-}
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use base64::{engine::general_purpose::URL_SAFE_NO_PAD,Engine};
-
-    const KEY:&[u8] = include_bytes!("../../fixtures/blake3.txt");
-
-    #[cfg(test)]
 }

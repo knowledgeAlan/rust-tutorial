@@ -129,38 +129,5 @@ pub fn process_text_sign(reader:&mut dyn Read,key:&[u8],format:TextSignFormat)->
     let signer:Box<dyn TextSigner> = match format {
         TextSignFormat::Blake3 => Box::new(Blake3::try_new(key)?),
         TextSignFormat::Ed25519 => Box::new(Ed255195Signer::try_new(key)?),
-    };
-
-    signer.sign(reader);
-}
-
-
-pub fn process_text_verify(reader:&mut dyn Read,key:&[u8],format:TextSignFormat)-> Result<bool>{
-
-    let verifier:Box<dyn TextVerifier> = match format {
-
-        TextSignerFormat::Blake3 => Box::new(Blake3::try_new(key)?),
-        TextSignerFormat::Ed25519 => Box::new(Ed255195Verifier::try_new(key)?),
-    };
-
-    verifier.verify(reader,sig);
-}
-
-
-pub fn process_text_key_generate(format:TextSignFormat)-> Result<HashMap<&'static str,Vec<u8>>>{
-    match format {
-        TextSignFormat::Blake3 => Blake3::generate(),
-        TextSignFormat:Ed25519 => Ed255195Signer::generate();,
     }
-}
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use base64::{engine::general_purpose::URL_SAFE_NO_PAD,Engine};
-
-    const KEY:&[u8] = include_bytes!("../../fixtures/blake3.txt");
-
-    #[cfg(test)]
 }
