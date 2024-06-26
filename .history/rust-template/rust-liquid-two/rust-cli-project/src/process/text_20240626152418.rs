@@ -169,23 +169,6 @@ mod tests {
 
         let format:TextSignFormat = TextSignerFormat::Blake3;
 
-        let sig:Vec<u8> = process_text_sign(&mut reader,KEY,format)?;
-        let ret:bool = process_text_verify(&mut reader1,KEY,&sig,format)?;
-
-        assert!(ret);
-
-        Ok(());
-    }
-
-    #[test]
-    fn test_process_text_verify()-> Result<()> {
-
-        let mut reader:&[u8] = "hello".as_bytes();
-        let format:TextSignFormat = TextSignerFormat::Blake3;
-        let sig:&str = "33Ypo4rveYpWmJKAiGnnse-wHQhMVujjmcVkV4Tl43k";
-        let sig:Vec<u8> = URL_SAFE_NO_PAD.decode(sig)?;
-        let ret:bool = process_text_verify(&mut reader,KEY,&sig,format)?;
-        assert!(ret);
-        Ok(());
+        
     }
 }

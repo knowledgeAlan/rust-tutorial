@@ -186,6 +186,6 @@ mod tests {
         let sig:Vec<u8> = URL_SAFE_NO_PAD.decode(sig)?;
         let ret:bool = process_text_verify(&mut reader,KEY,&sig,format)?;
         assert!(ret);
-        Ok(());
+        Ok(())
     }
 }

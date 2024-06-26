@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 56,
+            "activePatchIndex": 60,
             "patches": [
                 {
                     "date": 1719304275544,
@@ -232,6 +232,22 @@
                 {
                     "date": 1719307974107,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -155,10 +155,12 @@\n }\n \n \n #[cfg(test)]\n-mod test {\n+mod tests {\n     use super::*;\n     use base64::{engine::general_purpose::URL_SAFE_NO_PAD,Engine};\n \n     const KEY:&[u8] = include_bytes!(\"../../fixtures/blake3.txt\");\n+\n+    #[cfg(test)]\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719386658683,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -161,6 +161,14 @@\n     use base64::{engine::general_purpose::URL_SAFE_NO_PAD,Engine};\n \n     const KEY:&[u8] = include_bytes!(\"../../fixtures/blake3.txt\");\n \n-    #[cfg(test)]\n+    #[test]\n+    fn test_process_text_sign() -> Result<()> {\n+        let mut reader:&[u8] = \"hello\".as_bytes();\n+        let mut reader1:&[u8] = \"hello\".as_bytes();\n+\n+        let format:TextSignFormat = TextSignerFormat::Blake3;\n+\n+        \n+    }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719386756682,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -168,7 +168,12 @@\n         let mut reader1:&[u8] = \"hello\".as_bytes();\n \n         let format:TextSignFormat = TextSignerFormat::Blake3;\n \n-        \n+        let sig:Vec<u8> = process_text_sign(&mut reader,KEY,format)?;\n+        let ret:bool = process_text_verify(&mut reader1,KEY,&sig,format)?;\n+\n+        assert!(ret);\n+\n+        Ok(());\n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719388126346,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -175,5 +175,13 @@\n         assert!(ret);\n \n         Ok(());\n     }\n+\n+    #[test]\n+    fn test_process_text_verify()-> Result<()> {\n+\n+        let mut reader:&[u8] = \"hello\".as_bytes();\n+        let format:TextSignFormat = TextSignerFormat::Blake3;\n+        \n+    }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719388239168,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -181,7 +181,11 @@\n     fn test_process_text_verify()-> Result<()> {\n \n         let mut reader:&[u8] = \"hello\".as_bytes();\n         let format:TextSignFormat = TextSignerFormat::Blake3;\n-        \n+        let sig:&str = \"33Ypo4rveYpWmJKAiGnnse-wHQhMVujjmcVkV4Tl43k\";\n+        let sig:Vec<u8> = URL_SAFE_NO_PAD.decode(sig)?;\n+        let ret:bool = process_text_verify(&mut reader,KEY,&sig,format)?;\n+        assert!(ret);\n+        Ok(())\n     }\n }\n\\ No newline at end of file\n"
                 }
             ],
             "date": 1719304275544,
