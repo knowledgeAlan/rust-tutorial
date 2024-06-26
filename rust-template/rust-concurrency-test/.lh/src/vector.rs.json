@@ -1,0 +1,118 @@
+{
+    "sourceFile": "src/vector.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 25,
+            "patches": [
+                {
+                    "date": 1719390176289,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1719390239156,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,1 +1,7 @@\n use anyhow::{anyhow,Result};\n+use core::str;\n+use std::ops::{Add,AddAssign,Deref,Mul};\n+\n+pub struct Vector<T>{\n+    data:Vec<T>,\n+}\n"
+                },
+                {
+                    "date": 1719390325109,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,4 +4,8 @@\n \n pub struct Vector<T>{\n     data:Vec<T>,\n }\n+\n+pub fn dot_product<T>(a:Vector<T>,b:Vector<T>)->Result<T> where t:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n+\n+}\n"
+                },
+                {
+                    "date": 1719390434702,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,7 +5,11 @@\n pub struct Vector<T>{\n     data:Vec<T>,\n }\n \n-pub fn dot_product<T>(a:Vector<T>,b:Vector<T>)->Result<T> where t:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n+pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n+    \n \n+    if a.len() != b.len() {\n+        return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n+    }\n }\n"
+                },
+                {
+                    "date": 1719390439921,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,5 +11,8 @@\n \n     if a.len() != b.len() {\n         return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n     }\n+\n+\n+    let \n }\n"
+                },
+                {
+                    "date": 1719390469825,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,19 @@\n+use anyhow::{anyhow,Result};\n+use core::str;\n+use std::ops::{Add,AddAssign,Deref,Mul};\n+\n+pub struct Vector<T>{\n+    data:Vec<T>,\n+}\n+\n+pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n+    \n+\n+    if a.len() != b.len() {\n+        return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n+    }\n+\n+\n+    let mut sum:T = T::default();\n+    \n+}\n"
+                },
+                {
+                    "date": 1719390504821,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-use anyhow::{anyhow,Result};\n+use anyhow::{anyhow, Ok, Result};\n use core::str;\n use std::ops::{Add,AddAssign,Deref,Mul};\n \n pub struct Vector<T>{\n@@ -14,24 +14,10 @@\n     }\n \n \n     let mut sum:T = T::default();\n-    \n-}\n-use anyhow::{anyhow,Result};\n-use core::str;\n-use std::ops::{Add,AddAssign,Deref,Mul};\n \n-pub struct Vector<T>{\n-    data:Vec<T>,\n-}\n-\n-pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n-    \n-\n-    if a.len() != b.len() {\n-        return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n+    for i in 0..a.len() {\n+        sum += a[i] * b[i];\n     }\n-\n-\n-    let \n+    Ok(sum);\n }\n"
+                },
+                {
+                    "date": 1719390840144,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,4 +20,20 @@\n         sum += a[i] * b[i];\n     }\n     Ok(sum);\n }\n+pub fn dot_product1<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n+where\n+    T: Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T>,\n+{\n+    if a.len() != b.len() {\n+        // a.len => a.data.len() (Deref trait)\n+        return Err(anyhow!(\"Dot product error: a.len != b.len\"));\n+    }\n+\n+    let mut sum: T = T::default();\n+    for i in 0..a.len() {\n+        sum += a[i] * b[i];\n+    }\n+\n+    Ok(sum)\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719390866664,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,23 +5,23 @@\n pub struct Vector<T>{\n     data:Vec<T>,\n }\n \n-pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n+// pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n     \n \n-    if a.len() != b.len() {\n-        return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n-    }\n+//     if a.len() != b.len() {\n+//         return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n+//     }\n \n \n-    let mut sum:T = T::default();\n+//     let mut sum:T = T::default();\n \n-    for i in 0..a.len() {\n-        sum += a[i] * b[i];\n-    }\n-    Ok(sum);\n-}\n+//     for i in 0..a.len() {\n+//         sum += a[i] * b[i];\n+//     }\n+//     Ok(sum);\n+// }\n pub fn dot_product1<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n where\n     T: Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T>,\n {\n"
+                },
+                {
+                    "date": 1719391047075,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n use anyhow::{anyhow, Ok, Result};\n-use core::str;\n+ \n use std::ops::{Add,AddAssign,Deref,Mul};\n \n pub struct Vector<T>{\n     data:Vec<T>,\n"
+                },
+                {
+                    "date": 1719391464760,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,39 @@\n+use anyhow::{anyhow, Ok, Result};\n+ \n+use std::ops::{Add,AddAssign,Deref,Mul};\n+\n+pub struct Vector<T>{\n+    data:Vec<T>,\n+}\n+\n+// pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n+    \n+\n+//     if a.len() != b.len() {\n+//         return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n+//     }\n+\n+\n+//     let mut sum:T = T::default();\n+\n+//     for i in 0..a.len() {\n+//         sum += a[i] * b[i];\n+//     }\n+//     Ok(sum);\n+// }\n+pub fn dot_product1<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n+where\n+    T: Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T>,\n+{\n+    if a.len() != b.len() {\n+        // a.len => a.data.len() (Deref trait)\n+        return Err(anyhow!(\"Dot product error: a.len != b.len\"));\n+    }\n+\n+    let mut sum: T = T::default();\n+    for i in 0..a.len() {\n+        sum += a[i] * b[i];\n+    }\n+\n+    Ok(sum)\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719391474184,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -35,44 +35,5 @@\n         sum += a[i] * b[i];\n     }\n \n     Ok(sum)\n-}\n-use anyhow::{anyhow, Ok, Result};\n- \n-use std::ops::{Add,AddAssign,Deref,Mul};\n-\n-pub struct Vector<T>{\n-    data:Vec<T>,\n-}\n-\n-// pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n-    \n-\n-//     if a.len() != b.len() {\n-//         return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n-//     }\n-\n-\n-//     let mut sum:T = T::default();\n-\n-//     for i in 0..a.len() {\n-//         sum += a[i] * b[i];\n-//     }\n-//     Ok(sum);\n-// }\n-pub fn dot_product1<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n-where\n-    T: Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T>,\n-{\n-    if a.len() != b.len() {\n-        // a.len => a.data.len() (Deref trait)\n-        return Err(anyhow!(\"Dot product error: a.len != b.len\"));\n-    }\n-\n-    let mut sum: T = T::default();\n-    for i in 0..a.len() {\n-        sum += a[i] * b[i];\n-    }\n-\n-    Ok(sum)\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719392005038,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,16 +24,16 @@\n pub fn dot_product1<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n where\n     T: Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T>,\n {\n-    if a.len() != b.len() {\n+    if a.data.len() != b.len() {\n         // a.len => a.data.len() (Deref trait)\n         return Err(anyhow!(\"Dot product error: a.len != b.len\"));\n     }\n \n     let mut sum: T = T::default();\n     for i in 0..a.len() {\n-        sum += a[i] * b[i];\n+        // sum += a[i] * b[i];\n     }\n \n     Ok(sum)\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719392044097,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,9 +24,9 @@\n pub fn dot_product1<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n where\n     T: Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T>,\n {\n-    if a.data.len() != b.len() {\n+    if a.len() != b.len() {\n         // a.len => a.data.len() (Deref trait)\n         return Err(anyhow!(\"Dot product error: a.len != b.len\"));\n     }\n \n"
+                },
+                {
+                    "date": 1719392055143,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,28 +1,13 @@\n-use anyhow::{anyhow, Ok, Result};\n- \n-use std::ops::{Add,AddAssign,Deref,Mul};\n+use anyhow::{anyhow, Result};\n+use std::ops::{Add, AddAssign, Deref, Mul};\n \n-pub struct Vector<T>{\n-    data:Vec<T>,\n+pub struct Vector<T> {\n+    data: Vec<T>,\n }\n \n-// pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n-    \n-\n-//     if a.len() != b.len() {\n-//         return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n-//     }\n-\n-\n-//     let mut sum:T = T::default();\n-\n-//     for i in 0..a.len() {\n-//         sum += a[i] * b[i];\n-//     }\n-//     Ok(sum);\n-// }\n-pub fn dot_product1<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n+// pretend this is a heavy operation, CPU intensive\n+pub fn dot_product<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n where\n     T: Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T>,\n {\n     if a.len() != b.len() {\n@@ -31,9 +16,23 @@\n     }\n \n     let mut sum: T = T::default();\n     for i in 0..a.len() {\n-        // sum += a[i] * b[i];\n+        sum += a[i] * b[i];\n     }\n \n     Ok(sum)\n\\ No newline at end of file\n-}\n+}\n+\n+impl<T> Deref for Vector<T> {\n+    type Target = Vec<T>;\n+\n+    fn deref(&self) -> &Self::Target {\n+        &self.data\n+    }\n+}\n+\n+impl<T> Vector<T> {\n+    pub fn new(data: impl Into<Vec<T>>) -> Self {\n+        Self { data: data.into() }\n+    }\n+}\n"
+                },
+                {
+                    "date": 1719392063963,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,13 +1,28 @@\n-use anyhow::{anyhow, Result};\n-use std::ops::{Add, AddAssign, Deref, Mul};\n+use anyhow::{anyhow, Ok, Result};\n+ \n+use std::ops::{Add,AddAssign,Deref,Mul};\n \n-pub struct Vector<T> {\n-    data: Vec<T>,\n+pub struct Vector<T>{\n+    data:Vec<T>,\n }\n \n-// pretend this is a heavy operation, CPU intensive\n-pub fn dot_product<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n+// pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n+    \n+\n+//     if a.len() != b.len() {\n+//         return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n+//     }\n+\n+\n+//     let mut sum:T = T::default();\n+\n+//     for i in 0..a.len() {\n+//         sum += a[i] * b[i];\n+//     }\n+//     Ok(sum);\n+// }\n+pub fn dot_product1<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n where\n     T: Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T>,\n {\n     if a.len() != b.len() {\n@@ -16,23 +31,9 @@\n     }\n \n     let mut sum: T = T::default();\n     for i in 0..a.len() {\n-        sum += a[i] * b[i];\n+        // sum += a[i] * b[i];\n     }\n \n     Ok(sum)\n-}\n-\n-impl<T> Deref for Vector<T> {\n-    type Target = Vec<T>;\n-\n-    fn deref(&self) -> &Self::Target {\n-        &self.data\n-    }\n-}\n-\n-impl<T> Vector<T> {\n-    pub fn new(data: impl Into<Vec<T>>) -> Self {\n-        Self { data: data.into() }\n-    }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719392075031,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,6 @@\n-use anyhow::{anyhow, Ok, Result};\n- \n-use std::ops::{Add,AddAssign,Deref,Mul};\n+use anyhow::{anyhow, Result};\n+use std::ops::{Add, AddAssign, Deref, Mul};\n \n pub struct Vector<T>{\n     data:Vec<T>,\n }\n"
+                },
+                {
+                    "date": 1719392080504,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,11 +1,12 @@\n use anyhow::{anyhow, Result};\n use std::ops::{Add, AddAssign, Deref, Mul};\n \n-pub struct Vector<T>{\n-    data:Vec<T>,\n+pub struct Vector<T> {\n+    data: Vec<T>,\n }\n \n+\n // pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n     \n \n //     if a.len() != b.len() {\n"
+                },
+                {
+                    "date": 1719392584048,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -35,5 +35,12 @@\n         // sum += a[i] * b[i];\n     }\n \n     Ok(sum)\n+}\n+\n+\n+impl<T> Vector<T> {\n+    pub fn new(data:impl Into<Vec<T>>) -> Self {\n+        Self {data:data.into()}\n+    }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719392916834,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -42,5 +42,13 @@\n impl<T> Vector<T> {\n     pub fn new(data:impl Into<Vec<T>>) -> Self {\n         Self {data:data.into()}\n     }\n+}\n+\n+\n+impl<T> Deref for Vector<T> {\n+    type Target =  Vec<T>;\n+    fn deref(&self) -> &Self::Target<T> {\n+\n+    }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719392925883,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -48,7 +48,7 @@\n \n impl<T> Deref for Vector<T> {\n     type Target =  Vec<T>;\n     fn deref(&self) -> &Self::Target<T> {\n-\n+        &self.data\n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719392938966,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -31,9 +31,9 @@\n     }\n \n     let mut sum: T = T::default();\n     for i in 0..a.len() {\n-        // sum += a[i] * b[i];\n+        sum += a[i] * b[i];\n     }\n \n     Ok(sum)\n }\n"
+                },
+                {
+                    "date": 1719392952330,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -47,8 +47,8 @@\n \n \n impl<T> Deref for Vector<T> {\n     type Target =  Vec<T>;\n-    fn deref(&self) -> &Self::Target<T> {\n+    fn deref(&self) -> &Self::Target {\n         &self.data\n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719393242955,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,23 +5,23 @@\n     data: Vec<T>,\n }\n \n \n-// pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n+pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n     \n \n-//     if a.len() != b.len() {\n-//         return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n-//     }\n+    if a.len() != b.len() {\n+        return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n+    }\n \n \n-//     let mut sum:T = T::default();\n+    let mut sum:T = T::default();\n \n-//     for i in 0..a.len() {\n-//         sum += a[i] * b[i];\n-//     }\n-//     Ok(sum);\n-// }\n+    for i in 0..a.len() {\n+        sum += a[i] * b[i];\n+    }\n+    Ok(sum);\n+}\n pub fn dot_product1<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n where\n     T: Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T>,\n {\n"
+                },
+                {
+                    "date": 1719393257517,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n     data: Vec<T>,\n }\n \n \n-pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T:Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n+pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T: Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n     \n \n     if a.len() != b.len() {\n         return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n"
+                },
+                {
+                    "date": 1719393290188,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,10 @@\n     data: Vec<T>,\n }\n \n \n-pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T> where T: Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n+pub fn dot_product<T>(a:Vector<T>,b:Vector<T>) -> Result<T>\n+ where T: Copy+Default + Add<Output = T> + AddAssign + Mul<Output = T>,{\n     \n \n     if a.len() != b.len() {\n         return  Err(anyhow!(\"Dot  product error:a.len != b.len\"));\n@@ -18,9 +19,9 @@\n \n     for i in 0..a.len() {\n         sum += a[i] * b[i];\n     }\n-    Ok(sum);\n+    Ok(sum)\n }\n pub fn dot_product1<T>(a: Vector<T>, b: Vector<T>) -> Result<T>\n where\n     T: Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T>,\n"
+                }
+            ],
+            "date": 1719390176289,
+            "name": "Commit-0",
+            "content": "use anyhow::{anyhow,Result};\n"
+        }
+    ]
+}
