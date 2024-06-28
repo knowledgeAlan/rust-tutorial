@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 2,
+            "activePatchIndex": 18,
             "patches": [
                 {
                     "date": 1719390122169,
@@ -16,6 +16,70 @@
                 {
                     "date": 1719484351792,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,1 +1,2 @@\n- \n+use crate::{dot_product,Vector};\n+use anyhow::{anyhow,Result};\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719567463440,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,2 +1,8 @@\n use crate::{dot_product,Vector};\n-use anyhow::{anyhow,Result};\n\\ No newline at end of file\n+use anyhow::{anyhow,Result};\n+use std::{\n+    fmt,\n+    ops::{Add,AddAssign,Mul},\n+    sync::mpsc,\n+    thread,\n+};\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719567481351,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,5 +4,8 @@\n     fmt,\n     ops::{Add,AddAssign,Mul},\n     sync::mpsc,\n     thread,\n-};\n\\ No newline at end of file\n+};\n+\n+\n+cont num_threads:usize = 4;\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719567486989,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,5 +7,5 @@\n     thread,\n };\n \n \n-cont num_threads:usize = 4;\n\\ No newline at end of file\n+const NUM_THREADS:usize = 4;\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719567524262,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,5 +7,11 @@\n     thread,\n };\n \n \n-const NUM_THREADS:usize = 4;\n\\ No newline at end of file\n+const NUM_THREADS:usize = 4;\n+\n+pub struct Matrix<T> {\n+    data:Vec<T>,\n+    row:usize,\n+    col: usize,\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719567630826,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,5 +13,12 @@\n pub struct Matrix<T> {\n     data:Vec<T>,\n     row:usize,\n     col: usize,\n+}\n+\n+\n+pub struct MsgInput<T> {\n+    idx: usize,\n+    row: Vector<T>,\n+    col: Vector<T>,\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719567744692,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,5 +20,12 @@\n pub struct MsgInput<T> {\n     idx: usize,\n     row: Vector<T>,\n     col: Vector<T>,\n+}\n+\n+\n+pub struct MsgOutput<T> {\n+\n+    idx: usize,\n+    value: T,\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719567789596,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,5 +27,12 @@\n pub struct MsgOutput<T> {\n \n     idx: usize,\n     value: T,\n+}\n+\n+\n+pub struct Msg<T> {\n+\n+    input: MsgInput<T>,\n+    sender: oneshot::Sender<MsgOutput<T>>,\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1719567951127,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -34,5 +34,12 @@\n pub struct Msg<T> {\n \n     input: MsgInput<T>,\n     sender: oneshot::Sender<MsgOutput<T>>,\n-}\n\\ No newline at end of file\n+}\n+\n+\n+pub fn multiply<T>(a:&matrix<T>,b:&Matrix<T>) -> Result<Matrix<T>> \n+where T:Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T> + Send +'static,\n+{\n+    \n+}\n"
+                },
+                {
+                    "date": 1719567998495,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,11 +1,8 @@\n use crate::{dot_product,Vector};\n use anyhow::{anyhow,Result};\n use std::{\n-    fmt,\n-    ops::{Add,AddAssign,Mul},\n-    sync::mpsc,\n-    thread,\n+    any, fmt, ops::{Add,AddAssign,Mul}, sync::mpsc, thread\n };\n \n \n const NUM_THREADS:usize = 4;\n@@ -40,6 +37,8 @@\n \n pub fn multiply<T>(a:&matrix<T>,b:&Matrix<T>) -> Result<Matrix<T>> \n where T:Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T> + Send +'static,\n {\n-    \n+    if a.col != b.row {\n+        return Err(anyhow!(\"Matrix multiply error: a.col != b.row\");\n+    }\n }\n"
+                },
+                {
+                    "date": 1719568119418,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -34,11 +34,19 @@\n     sender: oneshot::Sender<MsgOutput<T>>,\n }\n \n \n-pub fn multiply<T>(a:&matrix<T>,b:&Matrix<T>) -> Result<Matrix<T>> \n+pub fn multiply<T>(a:&Matrix<T>,b:&Matrix<T>) -> Result<Matrix<T>> \n where T:Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T> + Send +'static,\n {\n     if a.col != b.row {\n-        return Err(anyhow!(\"Matrix multiply error: a.col != b.row\");\n+        return Err(anyhow!(\"Matrix multiply error: a.col != b.row\"));\n     }\n+\n+\n+    let senders:Vec<mpsc::Sender<Msg<T>>> = (0..NUM_THREADS).map(|_| {\n+\n+    })\n+    .collect::<Vec<_>>();\n+\n+\n }\n"
+                },
+                {
+                    "date": 1719568171403,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -43,9 +43,10 @@\n     }\n \n \n     let senders:Vec<mpsc::Sender<Msg<T>>> = (0..NUM_THREADS).map(|_| {\n-\n+            let (tx,rx) = mpsc::channel::<Msg<T>>();\n+            \n     })\n     .collect::<Vec<_>>();\n \n \n"
+                },
+                {
+                    "date": 1719568186724,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,9 +44,12 @@\n \n \n     let senders:Vec<mpsc::Sender<Msg<T>>> = (0..NUM_THREADS).map(|_| {\n             let (tx,rx) = mpsc::channel::<Msg<T>>();\n-            \n+\n+            thread::spawn(move ||{\n+                \n+            });\n     })\n     .collect::<Vec<_>>();\n \n \n"
+                },
+                {
+                    "date": 1719568291811,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -46,9 +46,11 @@\n     let senders:Vec<mpsc::Sender<Msg<T>>> = (0..NUM_THREADS).map(|_| {\n             let (tx,rx) = mpsc::channel::<Msg<T>>();\n \n             thread::spawn(move ||{\n-                \n+                for msg in rx {\n+                    let  value:T = dot_product(msg.input.row,msg.input.col)?;  \n+                }\n             });\n     })\n     .collect::<Vec<_>>();\n \n"
+                },
+                {
+                    "date": 1719568471815,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -48,8 +48,14 @@\n \n             thread::spawn(move ||{\n                 for msg in rx {\n                     let  value:T = dot_product(msg.input.row,msg.input.col)?;  \n+                    if let Err(e) = msg.sender.send(MsgOutput {\n+                        idx:msg.input.idx,\n+                        value,\n+                    }){\n+                        eprint!(\"Send error:{:?}\",e);\n+                    }\n                 }\n             });\n     })\n     .collect::<Vec<_>>();\n"
+                },
+                {
+                    "date": 1719568500153,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -55,8 +55,9 @@\n                     }){\n                         eprint!(\"Send error:{:?}\",e);\n                     }\n                 }\n+                Ok::<_,anyhow::Error>(())\n             });\n     })\n     .collect::<Vec<_>>();\n \n"
+                },
+                {
+                    "date": 1719568538748,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -57,9 +57,12 @@\n                     }\n                 }\n                 Ok::<_,anyhow::Error>(())\n             });\n+            tx\n     })\n     .collect::<Vec<_>>();\n \n \n+    \n+\n }\n"
                 }
             ],
             "date": 1719390122169,

@@ -58,11 +58,8 @@ where T:Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T> + Send +'
                 }
                 Ok::<_,anyhow::Error>(())
             });
-            tx
     })
     .collect::<Vec<_>>();
 
-
-    
 
 }

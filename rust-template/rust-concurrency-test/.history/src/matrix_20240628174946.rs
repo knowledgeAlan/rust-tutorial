@@ -47,22 +47,10 @@ where T:Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T> + Send +'
             let (tx,rx) = mpsc::channel::<Msg<T>>();
 
             thread::spawn(move ||{
-                for msg in rx {
-                    let  value:T = dot_product(msg.input.row,msg.input.col)?;  
-                    if let Err(e) = msg.sender.send(MsgOutput {
-                        idx:msg.input.idx,
-                        value,
-                    }){
-                        eprint!("Send error:{:?}",e);
-                    }
-                }
-                Ok::<_,anyhow::Error>(())
+                
             });
-            tx
     })
     .collect::<Vec<_>>();
 
-
-    
 
 }

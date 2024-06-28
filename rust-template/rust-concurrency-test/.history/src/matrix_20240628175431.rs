@@ -56,13 +56,9 @@ where T:Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T> + Send +'
                         eprint!("Send error:{:?}",e);
                     }
                 }
-                Ok::<_,anyhow::Error>(())
             });
-            tx
     })
     .collect::<Vec<_>>();
 
-
-    
 
 }
