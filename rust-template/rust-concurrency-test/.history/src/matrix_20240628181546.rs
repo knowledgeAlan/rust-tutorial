@@ -80,15 +80,7 @@ where T:Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T> + Send +'
             let input:MsgInput<T> = MsgInput::new(idx, row, col);
             let (tx,rx) = oneshot::channel();
             let msg:Msg<T> = Msg::new(input, tx);
-
-            if let Err(e) = senders[id% NUM_THREADS].send(msg) {
-
-                eprint!("Send error: {:?}", e);
-            }
-
-
-            receivers.push(rx);
-
+            
         }
     }
 
@@ -97,15 +89,8 @@ where T:Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T> + Send +'
         data[output.idx] = output.value;
     }
 
-  Ok(Matrix{
-    data,
-    row: a.row,
-    col: b.col,
-  })
+
 
     
 
 }
-
-
-

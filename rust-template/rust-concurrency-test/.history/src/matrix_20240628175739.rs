@@ -1,4 +1,4 @@
-use crate::{dot_product, vector::Vector, Vector};
+use crate::{dot_product,Vector};
 use anyhow::{anyhow,Result};
 use std::{
     any, fmt, ops::{Add,AddAssign,Mul}, sync::mpsc, thread
@@ -62,50 +62,11 @@ where T:Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T> + Send +'
     })
     .collect::<Vec<_>>();
 
-    let matrix_len:usize = a.row * b.col;
-    let mut data:Vec<T> = vec![T::default();matrix_len];
-    let mut receivers:Vec<oneshot::Receiver<MsgOutput<T>>> = Vec::with_capacity(matrix_len);
-
-    for i in 0..a.row{
-        for j in b..col{
-            let row:Vector<T> = Vector::new(&a.data[i*a.col..(i+1) * a.col]);
-            let col_data:Vec<T> = b.data[j..]
-            .iter()
-            .step_by(b.col)
-            .copied()
-            .collect::<Vec<_>>();
-
-            let col:Vector<T> = Vector::new(col_data);
-            let idx:usize =  i * b.col + j;
-            let input:MsgInput<T> = MsgInput::new(idx, row, col);
-            let (tx,rx) = oneshot::channel();
-            let msg:Msg<T> = Msg::new(input, tx);
-
-            if let Err(e) = senders[id% NUM_THREADS].send(msg) {
-
-                eprint!("Send error: {:?}", e);
-            }
-
-
-            receivers.push(rx);
-
-        }
-    }
 
     for rx in receivers {
         let output:MsgOutput<T> = rx.recv()?;
         data[output.idx] = output.value;
     }
-
-  Ok(Matrix{
-    data,
-    row: a.row,
-    col: b.col,
-  })
-
     
 
 }
-
-
-

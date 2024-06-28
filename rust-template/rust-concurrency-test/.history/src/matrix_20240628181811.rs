@@ -97,15 +97,8 @@ where T:Copy + Default + Add<Output = T> + AddAssign + Mul<Output = T> + Send +'
         data[output.idx] = output.value;
     }
 
-  Ok(Matrix{
-    data,
-    row: a.row,
-    col: b.col,
-  })
+
 
     
 
 }
-
-
-
