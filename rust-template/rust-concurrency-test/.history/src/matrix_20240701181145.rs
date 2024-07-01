@@ -181,7 +181,7 @@ mod tests {
 
         Ok(())
     }
-
+}
 
 #[test]
 fn test_matrix_display()-> Result<()> {
@@ -194,29 +194,4 @@ fn test_matrix_display()-> Result<()> {
     assert_eq!(format!("{}",c),"{7 10, 15 22}");
     Ok(())
 }
-
-
-#[test]
-fn test_a_can_not_multiply_b() {
-
-    let a:Matrix<i32> = Matrix::new([1,2,3,4],2,3);
-    let b:Matrix<i32> = Matrix::new([1,2,3,4],2,2);
-
-    let c: std::result::Result<Matrix<i32>,anyhow:Error>:std::result::Result<Matrix<i32>,anyhow:Error> = multiply(&a, &b);
-
-    assert!(c.is_err());
     
-}
-
-
-#[test]
-#[should_panic]
-fn test_a_can_not_multiply_b_panic() {
-    
-    let a:Matrix<i32> = Matrix::new([1,2,3,4,5,6], 2, 3);
-    let b:Matrix<i32> = Matrix::new([1,2,3,4],2,2);
-    let _c:Matrix<i32> = a * b;
-}
-
-}
-

@@ -1,5 +1,5 @@
 use crate::{dot_product, vector::Vector, Vector};
-use anyhow::{anyhow, Ok, Result};
+use anyhow::{anyhow,Result};
 use std::{
     any, fmt, ops::{Add,AddAssign,Mul}, process::Output, sync::mpsc, thread
 };
@@ -181,42 +181,12 @@ mod tests {
 
         Ok(())
     }
-
+}
 
 #[test]
 fn test_matrix_display()-> Result<()> {
 
     let a:Matrix<i32> = Matrix::new([1,2,3,4],2,2);
-    let b:Matrix<i32> = Matrix::new([1,2,3,4], 2, 2);
-    let c:Matrix<i32> = a * b;
-
-    assert_eq!(c.data,vec![7,10,15,22]);
-    assert_eq!(format!("{}",c),"{7 10, 15 22}");
-    Ok(())
-}
-
-
-#[test]
-fn test_a_can_not_multiply_b() {
-
-    let a:Matrix<i32> = Matrix::new([1,2,3,4],2,3);
-    let b:Matrix<i32> = Matrix::new([1,2,3,4],2,2);
-
-    let c: std::result::Result<Matrix<i32>,anyhow:Error>:std::result::Result<Matrix<i32>,anyhow:Error> = multiply(&a, &b);
-
-    assert!(c.is_err());
     
 }
-
-
-#[test]
-#[should_panic]
-fn test_a_can_not_multiply_b_panic() {
     
-    let a:Matrix<i32> = Matrix::new([1,2,3,4,5,6], 2, 3);
-    let b:Matrix<i32> = Matrix::new([1,2,3,4],2,2);
-    let _c:Matrix<i32> = a * b;
-}
-
-}
-
