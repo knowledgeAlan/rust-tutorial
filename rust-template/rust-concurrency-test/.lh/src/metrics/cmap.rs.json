@@ -1,0 +1,58 @@
+{
+    "sourceFile": "src/metrics/cmap.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 10,
+            "patches": [
+                {
+                    "date": 1719829680202,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1719829725806,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,6 +5,13 @@\n     fmt,\n     sync::{\n         atomic::{AtomicI64,Ordering},\n         Arc,\n-    }\n-};\n\\ No newline at end of file\n+    },\n+};\n+\n+\n+#[dervie(Debug)]\n+pub struct AmapMetrics {\n+\n+    data:Arc<HashMap<&'static str, AtomicI64>>,\n+ }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720001308381,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,5 +13,18 @@\n #[dervie(Debug)]\n pub struct AmapMetrics {\n \n     data:Arc<HashMap<&'static str, AtomicI64>>,\n+ }\n+\n+\n+ impl AmapMetrics {\n+\n+\n+    pub fn new(metric_names:&[&'static str]) -> Self {\n+\n+        let map:HashMap<&str, AtomicI64> =metric_names\n+        .iter()\n+        .map(|&name|(name,AtomicI64::new(0)))\n+        .collect();\n+    }\n  }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720001325485,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,6 +25,10 @@\n         let map:HashMap<&str, AtomicI64> =metric_names\n         .iter()\n         .map(|&name|(name,AtomicI64::new(0)))\n         .collect();\n+        \n+        AmapMetrics{\n+            data: Arc::new(map),\n+        }\n     }\n  }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720001383769,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,5 +30,13 @@\n         AmapMetrics{\n             data: Arc::new(map),\n         }\n     }\n+\n+\n+    pub fn inc(&self,key:impl AsRef<str>) -> Result<()>{\n+\n+        let key:&str = key.as_ref();\n+\n+        \n+    }\n  }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720001467580,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -36,7 +36,7 @@\n     pub fn inc(&self,key:impl AsRef<str>) -> Result<()>{\n \n         let key:&str = key.as_ref();\n \n-        \n+        let counter: &AtomicI64 = Self.data.get(key).ok_or_else(||anyhow::anyhow!(\"key {} not found\",key))?;\n     }\n  }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720001492677,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -37,6 +37,10 @@\n \n         let key:&str = key.as_ref();\n \n         let counter: &AtomicI64 = Self.data.get(key).ok_or_else(||anyhow::anyhow!(\"key {} not found\",key))?;\n+\n+        counter.fetch_add(1,Ordering::Relaxed);\n+\n+        Ok(())\n     }\n  }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720001542295,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -42,5 +42,16 @@\n         counter.fetch_add(1,Ordering::Relaxed);\n \n         Ok(())\n     }\n- }\n\\ No newline at end of file\n+ }\n+\n+\n+ impl Clone for AmapMetrics {\n+\n+    fn clone(&self) -> Self{\n+        AmapMetrics{\n+            data: Arc::clone(&self.data),\n+        }\n+    }\n+ }\n+\n"
+                },
+                {
+                    "date": 1720001593845,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -54,4 +54,11 @@\n         }\n     }\n  }\n \n+\n+ impl fmt::Display for AmapMetrics {\n+\n+    fn fmt(&self,f: &mut fmt::Formatter<'_'> ) -> fmt::Result {\n+        \n+    }\n+ }\n"
+                },
+                {
+                    "date": 1720001656708,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -58,7 +58,10 @@\n \n  impl fmt::Display for AmapMetrics {\n \n     fn fmt(&self,f: &mut fmt::Formatter<'_'> ) -> fmt::Result {\n-        \n+\n+        for(key,value) in self.data.iter(){\n+            writeln!(f,\"{}:{}\",key,value.load(Ordering::Relaxed))?;\n+        }\n     }\n  }\n"
+                },
+                {
+                    "date": 1720001664284,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -62,6 +62,8 @@\n \n         for(key,value) in self.data.iter(){\n             writeln!(f,\"{}:{}\",key,value.load(Ordering::Relaxed))?;\n         }\n+\n+        Ok(())\n     }\n  }\n"
+                }
+            ],
+            "date": 1719829680202,
+            "name": "Commit-0",
+            "content": "use anyhow::Result;\nuse std::{\n\n    collections::HashMap,\n    fmt,\n    sync::{\n        atomic::{AtomicI64,Ordering},\n        Arc,\n    }\n};"
+        }
+    ]
+}
